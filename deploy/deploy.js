@@ -258,7 +258,7 @@ async function deployToVPS() {
 
   await ssh.execCommand(`
     if [ -d "${APP.dir}/.git" ]; then
-      cd ${APP.dir} && git pull origin ${BRANCH} 2>&1
+      cd ${APP.dir} && git fetch origin ${BRANCH} && git reset --hard origin/${BRANCH} 2>&1
     else
       mkdir -p ${APP.dir}
       git clone ${REPO_URL} ${APP.dir} 2>&1
@@ -321,10 +321,10 @@ async function deployToVPS() {
   await remote('pm2 startup 2>&1 | tail -3', 'pm2 startup').catch(() => {});
 
   // ─ 3h. Nginx Config ──────────────────────────────────────
-  log('STEP 3h — Konfigurasi Nginx (Port 8080)');
+  log('STEP 3h — Konfigurasi Nginx untuk optik.codenusa.id');
   const nginxConf = `server {
-    listen 8080;
-    server_name ${VPS.host} _;
+    listen 80;
+    server_name optik.codenusa.id;
 
     # Frontend Desktop App
     root ${APP.dir}/frontend/dist;
@@ -370,7 +370,7 @@ EOFNGINX
 
   console.log('\n\x1b[32m' + '═'.repeat(60) + '\x1b[0m');
   console.log('\x1b[32m  🚀  DEPLOY BERHASIL!\x1b[0m');
-  console.log(`\x1b[36m  Frontend   → http://${VPS.host}\x1b[0m`);
+  console.log(`\x1b[36m  Frontend   → http://optik.codenusa.id\x1b[0m`);
   console.log(`\x1b[36m  Mobile PWA → http://${VPS.host}/m/\x1b[0m`);
   console.log(`\x1b[36m  API        → http://${VPS.host}/api/\x1b[0m`);
   console.log(`\x1b[36m  API Direct → http://${VPS.host}:3001\x1b[0m`);

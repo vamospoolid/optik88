@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Base API setup
-const API_URL = import.meta.env.PROD ? '/api' : 'http://localhost:3001/api';
+const API_URL = import.meta.env.PROD ? '' : 'http://localhost:3001';
 
 export const apiClient = axios.create({
   baseURL: API_URL,
