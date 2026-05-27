@@ -12,6 +12,9 @@ async function bootstrap() {
   // Enable global validation pipe
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
+  // Set global prefix
+  app.setGlobalPrefix('api');
+
   // Swagger setup
   const config = new DocumentBuilder()
     .setTitle('Optik88 API')
