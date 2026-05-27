@@ -153,15 +153,20 @@ const Reports: React.FC = () => {
 
   return (
     <div className="reports-page animate-fade-in">
-      {/* Page Header */}
-      <div className="reports-header">
-        <div className="header-titles">
-          <h1>📊 Laporan & Analitik</h1>
-          <p>Pantau performa penjualan, stok, dan pasien secara berkala.</p>
+      {/* ── Hero ── */}
+      <div className="reports-hero">
+        <div className="reports-hero-left">
+          <div className="reports-hero-icon"><TrendingUp size={26} /></div>
+          <div>
+            <h1>Laporan & Analitik</h1>
+            <p>Pantau performa penjualan, stok, dan pasien secara berkala.</p>
+          </div>
         </div>
-        <button className="btn btn-secondary" onClick={() => window.print()}>
-          <Download size={16} /> Ekspor PDF
-        </button>
+        <div className="reports-hero-right">
+          <button className="btn-report-export" onClick={() => window.print()}>
+            <Download size={16} /> Ekspor PDF
+          </button>
+        </div>
       </div>
 
       {/* Period Selector + Tab */}

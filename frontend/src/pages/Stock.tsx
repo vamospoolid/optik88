@@ -166,14 +166,18 @@ const Stock: React.FC = () => {
 
   return (
     <div className="stock-page animate-fade-in">
-      <div className="page-header-wizard">
-        <div className="header-titles">
-          <h1>Kelola Stok & Inventaris</h1>
-          <p>Kelola frame kacamata, brand lensa (termasuk lensa gosokan kustom), serta penyesuaian stok masuk dan harga jual.</p>
+      {/* ── Hero ── */}
+      <div className="stock-hero">
+        <div className="stock-hero-left">
+          <div className="stock-hero-icon"><Package size={26} /></div>
+          <div>
+            <h1>Kelola Stok & Inventaris</h1>
+            <p>Kelola frame kacamata, brand lensa (termasuk kustom), serta penyesuaian stok.</p>
+          </div>
         </div>
-        <div className="header-actions">
-          <button className="btn btn-primary btn-add-item shadow-glow" onClick={() => setIsAddOpen(true)}>
-            <Plus size={18} /> TAMBAH BARANG BARU
+        <div className="stock-hero-right">
+          <button className="btn-stock-new" onClick={() => setIsAddOpen(true)}>
+            <Plus size={16} /> Tambah Barang Baru
           </button>
         </div>
       </div>

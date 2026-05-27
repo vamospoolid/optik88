@@ -4,34 +4,90 @@
   gap: 1.5rem;
 }
 
-.page-header-wizard {
+/* ── Hero ── */
+.stock-hero {
+  background: var(--hero-gradient);
+  border-radius: 20px;
+  padding: 1.75rem 2rem;
   display: flex;
+  align-items: center;
   justify-content: space-between;
+  gap: 1.5rem;
+  color: white;
+  box-shadow: 0 8px 32px rgba(15, 23, 42, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.stock-hero::before {
+  content: '';
+  position: absolute;
+  top: -100px;
+  right: -50px;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(79,70,229,0.15) 0%, transparent 70%);
+}
+
+.stock-hero-left {
+  display: flex;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
+  gap: 1.25rem;
+  position: relative;
+  z-index: 1;
 }
 
-.header-titles h1 {
-  margin: 0;
-  font-size: 1.75rem;
-  font-weight: 800;
-  color: var(--text-primary);
-}
-
-.header-titles p {
-  margin: 0.25rem 0 0 0;
-  color: var(--text-secondary);
-  font-size: 0.875rem;
-}
-
-.btn-add-item {
-  display: inline-flex;
+.stock-hero-icon {
+  width: 56px;
+  height: 56px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 16px;
+  display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-weight: 800;
-  font-size: 0.8125rem;
+  justify-content: center;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+.stock-hero-left h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 0.25rem;
+  letter-spacing: -0.02em;
+  color: #ffffff !important;
+}
+
+.stock-hero-left p { margin: 0; color: rgba(255,255,255,0.75); font-size: 0.875rem; }
+
+.stock-hero-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.btn-stock-new {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
   padding: 0.75rem 1.25rem;
+  background: #4f46e5;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(79,70,229,0.3);
+}
+.btn-stock-new:hover { background: #4338ca; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(79,70,229,0.4); }
+
+@media (max-width: 900px) {
+  .stock-hero { flex-direction: column; align-items: flex-start; }
 }
 
 /* Stock filters */

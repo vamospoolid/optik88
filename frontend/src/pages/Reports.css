@@ -4,25 +4,90 @@
   gap: 1.5rem;
 }
 
-/* Header */
-.reports-header {
+/* ── Hero ── */
+.reports-hero {
+  background: var(--hero-gradient);
+  border-radius: 20px;
+  padding: 1.75rem 2rem;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
+  justify-content: space-between;
+  gap: 1.5rem;
+  color: white;
+  box-shadow: 0 8px 32px rgba(15, 23, 42, 0.2);
+  position: relative;
+  overflow: hidden;
+  margin-bottom: -0.5rem; /* pull up controls a bit */
 }
 
-.reports-header h1 {
-  margin: 0;
-  font-size: 1.75rem;
-  font-weight: 800;
+.reports-hero::before {
+  content: '';
+  position: absolute;
+  top: -100px;
+  right: -50px;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(79,70,229,0.15) 0%, transparent 70%);
 }
 
-.reports-header p {
-  margin: 0.25rem 0 0;
-  color: var(--text-secondary);
+.reports-hero-left {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  position: relative;
+  z-index: 1;
+}
+
+.reports-hero-icon {
+  width: 56px;
+  height: 56px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+.reports-hero-left h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 0.25rem;
+  letter-spacing: -0.02em;
+  color: #ffffff !important;
+}
+
+.reports-hero-left p { margin: 0; color: rgba(255,255,255,0.75); font-size: 0.875rem; }
+
+.reports-hero-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.btn-report-export {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.75rem 1.25rem;
+  background: rgba(255,255,255,0.1);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 10px;
   font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.btn-report-export:hover { background: rgba(255,255,255,0.2); transform: translateY(-1px); }
+
+@media (max-width: 900px) {
+  .reports-hero { flex-direction: column; align-items: flex-start; }
 }
 
 /* Controls Row */
