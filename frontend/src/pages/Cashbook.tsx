@@ -18,7 +18,7 @@ const Cashbook: React.FC = () => {
     notes: ''
   });
 
-  const { data: summary, isLoading: loadSummary, isFetching: fetchSummary } = useQuery({
+  const { data: summary, isFetching: fetchSummary } = useQuery({
     queryKey: ['cashflow_summary'],
     queryFn: cashflowService.getTodaySummary,
   });

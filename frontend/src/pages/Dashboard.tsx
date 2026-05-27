@@ -21,7 +21,7 @@ const Dashboard: React.FC = () => {
     queryFn: patientsService.getAll,
   });
 
-  const { data: examinations, isLoading: loadExams } = useQuery<EyeExamination[]>({
+  const { data: examinations, isLoading: loadExams } = useQuery<(EyeExamination & { prescription?: any })[]>({
     queryKey: ['examinations'],
     queryFn: () => examinationsService.getAll(),
   });
@@ -49,8 +49,6 @@ const Dashboard: React.FC = () => {
 
   // Calculate stats dynamically
   const today = new Date();
-  const offset = today.getTimezoneOffset();
-  const localTodayStr = new Date(today.getTime() - (offset * 60000)).toISOString().split('T')[0];
 
   const todayPatients = patients?.filter((p) => {
     if (!p.created_at) return false;
@@ -351,8 +349,8 @@ const Dashboard: React.FC = () => {
               {examinations && examinations.length > 0 ? (
                 examinations.slice(0, 3).map((e) => {
                   const pat = patients?.find(p => p.id === e.patient_id);
-                  const sphR = e.prescription?.details?.find(d => d.eye === 'R')?.sph;
-                  const sphL = e.prescription?.details?.find(d => d.eye === 'L')?.sph;
+                  const sphR = e.prescription?.details?.find((d: any) => d.eye === 'R')?.sph;
+                  const sphL = e.prescription?.details?.find((d: any) => d.eye === 'L')?.sph;
                   const pd = e.prescription?.pd;
                   return (
                     <div key={e.id} className="rx-widget-item">

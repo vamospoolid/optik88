@@ -17,12 +17,13 @@ const Settings: React.FC = () => {
 
   const handleConnectPrinter = async () => {
     try {
-      if (!navigator.bluetooth) {
+      const nav = navigator as any;
+      if (!nav.bluetooth) {
         alert('Web Bluetooth API tidak didukung di browser ini. Gunakan Chrome di Android/PC.');
         return;
       }
       // Request bluetooth device
-      await navigator.bluetooth.requestDevice({
+      await nav.bluetooth.requestDevice({
         acceptAllDevices: true,
         optionalServices: ['000018f0-0000-1000-8000-00805f9b34fb'] // generic printer service
       });
