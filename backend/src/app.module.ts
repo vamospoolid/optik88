@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ScheduleModule } from '@nestjs/schedule';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { SeederService } from './database/seeder.service';
@@ -19,6 +20,7 @@ import { StockModule } from './modules/stock/stock.module';
 import { TransactionsModule } from './modules/transactions/transactions.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { CashflowModule } from './modules/cashflow/cashflow.module';
+import { BackupModule } from './modules/backup/backup.module';
 
 @Module({
   imports: [
@@ -37,6 +39,7 @@ import { CashflowModule } from './modules/cashflow/cashflow.module';
       ],
       synchronize: true, // Auto create/update schema in SQLite dev environment
     }),
+    ScheduleModule.forRoot(),
     TypeOrmModule.forFeature([
       PatientEntity,
       EyeExaminationEntity,
@@ -53,6 +56,7 @@ import { CashflowModule } from './modules/cashflow/cashflow.module';
     TransactionsModule,
     AuthModule,
     CashflowModule,
+    BackupModule,
   ],
   controllers: [AppController],
   providers: [AppService, SeederService],

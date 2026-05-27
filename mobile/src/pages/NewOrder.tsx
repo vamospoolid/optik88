@@ -85,7 +85,7 @@ export default function NewOrder() {
   // ── STEP 4: Pembayaran & Checkout ──
   const [discount, setDiscount] = useState(0);
   const [payAmount, setPayAmount] = useState(0);
-  const [paymentMethod, setPaymentMethod] = useState<'cash' | 'transfer' | 'debit' | 'credit' | 'bpjs'>('cash');
+  const [paymentMethod, setPaymentMethod] = useState<'tunai' | 'transfer' | 'qris'>('tunai');
   const [orderNotes, setOrderNotes] = useState('');
 
   // Queries
@@ -253,14 +253,6 @@ export default function NewOrder() {
           prescription_details: { od: { sph: parseFloat(odSph), cyl: parseFloat(odCyl), axis: parseInt(odAxis)||0, add: parseFloat(odAdd), pd: parseFloat(odPd) }, os: { sph: parseFloat(osSph), cyl: parseFloat(osCyl), axis: parseInt(osAxis)||0, add: parseFloat(osAdd), pd: parseFloat(osPd) } } },
       };
     }
-    const methodMapping: Record<string, string> = {
-      cash: 'tunai',
-      transfer: 'transfer',
-      debit: 'debit',
-      credit: 'kredit',
-      bpjs: 'bpjs',
-    };
-    const mappedPaymentMethod = methodMapping[paymentMethod] || 'tunai';
     checkoutMutation.mutate({
       _skipExam: skipExam, _rxSource: rxSource,
       _selectedExamId: selectedInternalExam?.id,
@@ -268,7 +260,7 @@ export default function NewOrder() {
       patient_id: selectedPatient.id,
       items: cart.map(c => ({ product_type: c.product_type, product_id: c.product_id||null, name: c.name, original_price: c.original_price, sell_price: c.sell_price, qty: c.qty, subtotal: c.subtotal })),
       discount, total_amount: total, paid_amount: payAmount,
-      payment_method: mappedPaymentMethod, notes: orderNotes.trim()||undefined,
+      payment_method: paymentMethod, notes: orderNotes.trim()||undefined,
     });
   };
 
@@ -867,11 +859,9 @@ export default function NewOrder() {
             <label className="form-label">Metode Pembayaran</label>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
               {[
-                { id: 'cash', label: 'Cash', icon: DollarSign },
-                { id: 'transfer', label: 'Transfer', icon: CreditCard },
-                { id: 'debit', label: 'Debit', icon: CreditCard },
-                { id: 'credit', label: 'Kredit', icon: CreditCard },
-                { id: 'bpjs', label: 'Klaim BPJS', icon: ShieldCheck }
+                { id: 'tunai', label: 'Cash', icon: DollarSign },
+                { id: 'qris', label: 'QRIS', icon: ShieldCheck },
+                { id: 'transfer', label: 'Transfer', icon: CreditCard }
               ].map(method => {
                 const Icon = method.icon;
                 const isSelected = paymentMethod === method.id;

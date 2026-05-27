@@ -4,6 +4,7 @@ import { Repository, EntityManager } from 'typeorm';
 import { TransactionEntity } from '../../entities/transaction.entity';
 import { TransactionItemEntity } from '../../entities/transaction-item.entity';
 import { StockItemEntity } from '../../entities/stock.entity';
+import { CashflowEntity } from '../../entities/cashflow.entity';
 import { Transaction as ITransaction } from 'optik88-shared';
 
 @Injectable()
@@ -119,7 +120,9 @@ export class TransactionsService {
       // Calculate final totals
       const discount = Number(data.discount || 0);
       const totalAmount = Math.max(0, calculatedSubtotal - discount);
-      const paidAmount = Number(data.paid_amount || 0);
+      let rawPaidAmount = Number(data.paid_amount || 0);
+      if (rawPaidAmount < 0) throw new BadRequestException('Nominal pembayaran tidak boleh negatif');
+      const paidAmount = Math.min(rawPaidAmount, totalAmount);
       const remainingAmount = Math.max(0, totalAmount - paidAmount);
 
       // Determine statuses
@@ -155,6 +158,19 @@ export class TransactionsService {
       for (const item of processedItems) {
         item.transaction_id = savedTrx.id;
         await manager.save(TransactionItemEntity, item);
+      }
+
+      // Sync to Cashflow Ledger
+      if (paidAmount > 0) {
+        const cashflow = manager.create(CashflowEntity, {
+          id: `CF-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+          type: 'INCOME',
+          amount: paidAmount,
+          category: 'Sales',
+          notes: `Pembayaran transaksi ${invoiceNumber} (${data.payment_method || 'tunai'})`,
+          created_by: data.created_by || 'Sistem POS',
+        });
+        await manager.save(CashflowEntity, cashflow);
       }
 
       // Return fully loaded transaction
@@ -220,13 +236,30 @@ export class TransactionsService {
       }
 
       if (status.paid_amount !== undefined) {
-        trx.paid_amount = Math.min(trx.total_amount, trx.paid_amount + status.paid_amount);
-        trx.remaining_amount = Math.max(0, trx.total_amount - trx.paid_amount);
+        if (status.paid_amount < 0) throw new BadRequestException('Nominal pembayaran tidak boleh negatif');
+        
+        const actualDelta = Math.min(trx.remaining_amount, status.paid_amount);
 
-        if (trx.remaining_amount === 0) {
-          trx.payment_status = 'lunas';
-        } else {
-          trx.payment_status = 'dp';
+        if (actualDelta > 0) {
+          trx.paid_amount = trx.paid_amount + actualDelta;
+          trx.remaining_amount = Math.max(0, trx.total_amount - trx.paid_amount);
+
+          if (trx.remaining_amount === 0) {
+            trx.payment_status = 'lunas';
+          } else {
+            trx.payment_status = 'dp';
+          }
+          
+          // Sync additional payment to Cashflow Ledger
+          const cashflow = manager.create(CashflowEntity, {
+            id: `CF-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+            type: 'INCOME',
+            amount: actualDelta,
+            category: 'Sales (Pelunasan)',
+            notes: `Pelunasan piutang transaksi ${trx.invoice_number}`,
+            created_by: 'Sistem POS',
+          });
+          await manager.save(CashflowEntity, cashflow);
         }
       }
 

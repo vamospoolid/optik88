@@ -3,7 +3,7 @@ import {
   Printer, MessageSquare, ChevronRight, Lock, LogOut, Eye, ToggleLeft, ToggleRight, X
 } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
-
+import { useSettingsStore } from '../store/useSettingsStore';
 export default function Settings() {
   const user = useAuthStore(s => s.user);
   const logout = useAuthStore(s => s.logout);
@@ -12,6 +12,9 @@ export default function Settings() {
   const [waConnected, setWaConnected] = useState(true);
   const [btConnected, setBtConnected] = useState(false);
   const [activeTheme, setActiveTheme] = useState<'light' | 'blue'>('blue');
+  const [gdriveEditMode, setGdriveEditMode] = useState(false);
+
+  const { gdrivePrescriptionUrl, setGdrivePrescriptionUrl } = useSettingsStore();
 
   const [showWaModal, setShowWaModal] = useState(false);
   const [showBtModal, setShowBtModal] = useState(false);
@@ -103,6 +106,41 @@ export default function Settings() {
           <button style={{ border: 'none', background: 'transparent', cursor: 'pointer', color: 'var(--primary)' }} onClick={() => setActiveTheme(activeTheme === 'blue' ? 'light' : 'blue')}>
             {activeTheme === 'blue' ? <ToggleRight size={32} /> : <ToggleLeft size={32} />}
           </button>
+        </div>
+
+        {/* Google Drive Configuration Card */}
+        <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+              <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: '#E0F2FE', color: '#0284C7', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+              </div>
+              <div>
+                <div style={{ fontSize: '0.875rem', fontWeight: 700 }}>Penyimpanan G-Drive</div>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Link folder foto resep</span>
+              </div>
+            </div>
+            <button 
+              style={{ border: 'none', background: 'var(--primary-light)', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', color: 'var(--primary)', fontSize: '0.75rem', fontWeight: 600 }} 
+              onClick={() => setGdriveEditMode(!gdriveEditMode)}
+            >
+              {gdriveEditMode ? 'Simpan' : 'Edit'}
+            </button>
+          </div>
+          {gdriveEditMode ? (
+            <input 
+              type="text" 
+              className="input-field" 
+              placeholder="Masukkan link folder Google Drive..." 
+              value={gdrivePrescriptionUrl}
+              onChange={(e) => setGdrivePrescriptionUrl(e.target.value)}
+              style={{ fontSize: '0.8125rem' }}
+            />
+          ) : (
+            <div style={{ fontSize: '0.8125rem', color: gdrivePrescriptionUrl ? 'var(--text)' : 'var(--text-secondary)', background: 'var(--bg)', padding: '8px', borderRadius: '6px', wordBreak: 'break-all' }}>
+              {gdrivePrescriptionUrl || 'Belum ada link Google Drive yang diatur.'}
+            </div>
+          )}
         </div>
 
         {/* Change Password Card */}

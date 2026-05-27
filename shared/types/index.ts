@@ -53,7 +53,7 @@ export type StockItem = {
   description?: string;
 };
 
-export type PaymentMethod = 'tunai' | 'transfer' | 'debit' | 'kredit' | 'bpjs';
+export type PaymentMethod = 'tunai' | 'transfer' | 'qris' | 'debit' | 'kredit' | 'bpjs';
 export type OrderStatus = 'pending' | 'diproses' | 'siap' | 'selesai' | 'dibatalkan';
 export type PaymentStatus = 'belum_bayar' | 'dp' | 'lunas';
 

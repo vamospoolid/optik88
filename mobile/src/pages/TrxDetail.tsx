@@ -57,9 +57,7 @@ Terima kasih telah memercayakan kesehatan mata Anda di *Optik 88*. Semoga sehat 
 
   const [showPayForm, setShowPayForm] = useState(false);
   const [payAmount, setPayAmount] = useState('');
-  const [payMethod, setPayMethod] = useState<'cash' | 'transfer' | 'debit' | 'credit'>('cash');
-
-  const mapPayMethod = (m: string) => ({ cash: 'tunai', transfer: 'transfer', debit: 'debit', credit: 'kredit' }[m] || 'tunai');
+  const [payMethod, setPayMethod] = useState<'tunai' | 'transfer' | 'qris'>('tunai');
 
   // Queries
   const { data: transaction, isLoading: isLoadingTrx } = useQuery<any>({
@@ -131,8 +129,8 @@ Terima kasih telah memercayakan kesehatan mata Anda di *Optik 88*. Semoga sehat 
     if (amount <= 0) return;
 
     updateStatusMutation.mutate({
-      paidAmount: transaction.paid_amount + amount,
-      paymentMethod: mapPayMethod(payMethod),
+      paidAmount: amount,
+      paymentMethod: payMethod,
     });
   };
 
@@ -356,10 +354,9 @@ Terima kasih telah memercayakan kesehatan mata Anda di *Optik 88*. Semoga sehat 
                 <div className="form-group">
                   <label className="form-label">Metode Pembayaran</label>
                   <select className="form-control" value={payMethod} onChange={e => setPayMethod(e.target.value as any)}>
-                    <option value="cash">Cash / Tunai</option>
+                    <option value="tunai">Cash / Tunai</option>
+                    <option value="qris">QRIS</option>
                     <option value="transfer">Bank Transfer</option>
-                    <option value="debit">Kartu Debit</option>
-                    <option value="credit">Kartu Kredit</option>
                   </select>
                 </div>
 
