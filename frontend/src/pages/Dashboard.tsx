@@ -76,14 +76,50 @@ const Dashboard: React.FC = () => {
   const totalRevenue = transactions?.reduce((sum, t) => sum + t.paid_amount, 0) || 0;
   const lowStockItems = stockItems?.filter((s) => s.category !== 'service' && s.stock <= s.min_stock) || [];
 
-  // Drawer breakdown (Today's Cashflow collected)
-  const drawerBreakdown = {
-    tunai: todayTransactions.filter(t => t.payment_method === 'tunai').reduce((sum, t) => sum + t.paid_amount, 0),
-    transfer: todayTransactions.filter(t => t.payment_method === 'transfer').reduce((sum, t) => sum + t.paid_amount, 0),
-    debit: todayTransactions.filter(t => t.payment_method === 'debit').reduce((sum, t) => sum + t.paid_amount, 0),
-    kredit: todayTransactions.filter(t => t.payment_method === 'kredit').reduce((sum, t) => sum + t.paid_amount, 0),
-    bpjs: todayTransactions.filter(t => t.payment_method === 'bpjs').reduce((sum, t) => sum + t.paid_amount, 0),
-  };
+  // Drawer breakdown — hanya 3 metode aktif: TUNAI, QRIS, TRANSFER
+  const drawerMethods = [
+    {
+      key:   'tunai',
+      label: 'Tunai',
+      desc:  'Cash / Uang Fisik',
+      icon:  '💵',
+      color: '#059669',
+      bg:    '#ecfdf5',
+      border:'#6ee7b7',
+    },
+    {
+      key:   'qris',
+      label: 'QRIS',
+      desc:  'Scan QR Code',
+      icon:  '📱',
+      color: '#7c3aed',
+      bg:    '#f5f3ff',
+      border:'#c4b5fd',
+    },
+    {
+      key:   'transfer',
+      label: 'Transfer Bank',
+      desc:  'Transfer Rekening',
+      icon:  '🏦',
+      color: '#1d4ed8',
+      bg:    '#eff6ff',
+      border:'#93c5fd',
+    },
+  ] as const;
+
+  type DrawerKey = typeof drawerMethods[number]['key'];
+
+  const drawerBreakdown = drawerMethods.reduce((acc, m) => {
+    const trxList = todayTransactions.filter(t => t.payment_method === m.key);
+    acc[m.key] = {
+      amount: trxList.reduce((s, t) => s + t.paid_amount, 0),
+      count:  trxList.length,
+    };
+    return acc;
+  }, {} as Record<DrawerKey, { amount: number; count: number }>);
+
+  const drawerTotal = Object.values(drawerBreakdown).reduce((s, v) => s + v.amount, 0);
+
 
   const statCards = [
     {
@@ -309,35 +345,81 @@ const Dashboard: React.FC = () => {
 
         {/* Right Column: Cash Drawer Summary, Low Stock & Refractions */}
         <div className="db-right-col">
-          {/* Cash Drawer Drawer Summary */}
-          <div className="db-widget-card border-success">
-            <h3 className="widget-title">💰 Pendapatan Kasir (Hari Ini)</h3>
-            <p className="widget-subtitle">Rincian uang masuk laci kasir per metode</p>
-            <div className="drawer-breakdown-list">
-              <div className="drawer-row">
-                <div className="drawer-lbl">💵 Uang Tunai (Fisik)</div>
-                <strong className="text-success">{rp(drawerBreakdown.tunai)}</strong>
+          {/* Cash Drawer Summary — Premium Redesign */}
+          <div className="drawer-widget-card">
+            {/* Header */}
+            <div className="drawer-widget-header">
+              <div className="drawer-widget-header-left">
+                <div className="drawer-widget-icon">💰</div>
+                <div>
+                  <h3 className="drawer-widget-title">Pendapatan Kasir</h3>
+                  <p className="drawer-widget-sub">Rincian per metode bayar • {new Date().toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'short' })}</p>
+                </div>
               </div>
-              <div className="drawer-row">
-                <div className="drawer-lbl">🏦 Transfer Bank</div>
-                <strong>{rp(drawerBreakdown.transfer)}</strong>
-              </div>
-              <div className="drawer-row">
-                <div className="drawer-lbl">💳 Kartu Debit</div>
-                <strong>{rp(drawerBreakdown.debit)}</strong>
-              </div>
-              <div className="drawer-row">
-                <div className="drawer-lbl">💳 Kartu Kredit</div>
-                <strong>{rp(drawerBreakdown.kredit)}</strong>
-              </div>
-              <div className="drawer-row">
-                <div className="drawer-lbl">🏥 Klaim BPJS</div>
-                <strong>{rp(drawerBreakdown.bpjs)}</strong>
+              <div className="drawer-widget-total-pill">
+                <span className="drawer-widget-total-label">Total</span>
+                <span className="drawer-widget-total-val">{rp(drawerTotal)}</span>
               </div>
             </div>
-            <div className="drawer-total-block">
-              <span>Total Uang Laci Kasir:</span>
-              <strong>{rp(todayRevenue)}</strong>
+
+            {/* Txn count summary */}
+            <div className="drawer-txn-summary">
+              <span className="drawer-txn-count-badge">{todayTransactions.length} transaksi hari ini</span>
+              {todayTransactions.length === 0 && (
+                <span className="drawer-txn-empty">Belum ada transaksi</span>
+              )}
+            </div>
+
+            {/* Per-method breakdown */}
+            <div className="drawer-methods-list">
+              {drawerMethods.map(m => {
+                const data = drawerBreakdown[m.key];
+                const pct  = drawerTotal > 0 ? Math.round((data.amount / drawerTotal) * 100) : 0;
+                return (
+                  <div
+                    key={m.key}
+                    className={`drawer-method-card ${data.amount > 0 ? 'has-amount' : ''}`}
+                    style={data.amount > 0 ? { borderColor: m.border, background: m.bg } : {}}
+                  >
+                    <div className="drawer-method-top">
+                      <div className="drawer-method-left">
+                        <span className="drawer-method-emoji">{m.icon}</span>
+                        <div className="drawer-method-info">
+                          <span className="drawer-method-name" style={data.amount > 0 ? { color: m.color } : {}}>{m.label}</span>
+                          <span className="drawer-method-desc">{m.desc}</span>
+                        </div>
+                      </div>
+                      <div className="drawer-method-right">
+                        <span className="drawer-method-amount" style={data.amount > 0 ? { color: m.color } : {}}>
+                          {rp(data.amount)}
+                        </span>
+                        <span className="drawer-method-count">{data.count} trx</span>
+                      </div>
+                    </div>
+                    {/* Progress bar */}
+                    {drawerTotal > 0 && (
+                      <div className="drawer-method-bar-track">
+                        <div
+                          className="drawer-method-bar-fill"
+                          style={{ width: `${pct}%`, background: m.color }}
+                        />
+                      </div>
+                    )}
+                    {pct > 0 && (
+                      <div className="drawer-method-pct" style={{ color: m.color }}>{pct}%</div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Grand total bar */}
+            <div className="drawer-grand-total">
+              <div className="drawer-grand-left">
+                <span className="drawer-grand-label">Total Uang Masuk (Hari Ini)</span>
+                <span className="drawer-grand-trx">{todayTransactions.length} transaksi &bull; {todayTransactions.filter(t => t.payment_status === 'lunas').length} lunas</span>
+              </div>
+              <strong className="drawer-grand-amount">{rp(drawerTotal)}</strong>
             </div>
           </div>
 
