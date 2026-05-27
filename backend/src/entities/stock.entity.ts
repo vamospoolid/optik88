@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryColumn, VersionColumn } from 'typeorm';
+import { Entity, Column, PrimaryColumn } from 'typeorm';
 import { StockItem as IStockItem } from 'optik88-shared';
 
 @Entity('stock_items')
@@ -38,7 +38,4 @@ export class StockItemEntity implements IStockItem {
 
   @Column({ nullable: true })
   description?: string;
-
-  @VersionColumn()
-  version: number;
 }
