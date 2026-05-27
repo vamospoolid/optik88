@@ -1,0 +1,190 @@
+.clinical-modal {
+  max-width: 900px; /* Wider for clinical data */
+}
+
+.clinical-header-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.border-bottom-success { border-bottom: 2px solid var(--secondary); }
+.border-bottom-warning { border-bottom: 2px solid var(--warning); }
+
+.clinical-body {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.clinical-layout {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 768px) {
+  .clinical-layout {
+    flex-direction: row;
+  }
+}
+
+.clinical-metadata {
+  flex: 1;
+  padding: 1.5rem;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  background-color: var(--surface);
+}
+
+.clinical-rx-data {
+  flex: 1.5;
+  padding: 1.5rem;
+  background-color: var(--surface-hover);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.section-title-sm {
+  font-size: 1rem;
+  margin: 0 0 0.5rem 0;
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+}
+
+.mr-2 {
+  margin-right: 0.5rem;
+}
+
+.rx-table-container {
+  background: white;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.rx-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.rx-table th {
+  background-color: var(--primary-light);
+  color: var(--primary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-align: center;
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.rx-table td {
+  padding: 1rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+  text-align: center;
+}
+
+.rx-table tr:last-child td {
+  border-bottom: none;
+}
+
+.rx-row-od {
+  background-color: rgba(239, 68, 68, 0.05); /* Very light red for Right Eye */
+}
+
+.rx-row-os {
+  background-color: rgba(16, 185, 129, 0.05); /* Very light green for Left Eye */
+}
+
+.eye-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.eye-label strong {
+  font-size: 1.25rem;
+  color: var(--text-primary);
+}
+
+.eye-desc {
+  font-size: 0.65rem;
+  color: var(--text-tertiary);
+  margin-top: 0.125rem;
+}
+
+.rx-input {
+  width: 60px;
+  text-align: center;
+  padding: 0.5rem 0.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: 'Outfit', monospace;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all var(--transition-fast);
+}
+
+.rx-input:focus {
+  border-color: var(--primary);
+  outline: none;
+  box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+.rx-accessories {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  background: white;
+  padding: 1.25rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+.pd-group {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pd-input-wrap {
+  width: 80px;
+}
+
+.text-lg { font-size: 1.25rem; }
+.font-bold { font-weight: 700; }
+.text-center { text-align: center; }
+
+.border-dashed {
+  border: 1px dashed var(--border);
+}
+
+.bg-secondary {
+  background-color: var(--secondary) !important;
+}
+
+.bg-secondary:hover {
+  background-color: var(--secondary-hover) !important;
+}
+
+.bg-warning {
+  background-color: var(--warning) !important;
+  color: white !important;
+}
+
+.bg-warning:hover {
+  background-color: #D97706 !important;
+}
+
+.mt-auto { margin-top: auto; }

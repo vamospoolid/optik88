@@ -1,0 +1,8 @@
+{
+  "name": "optik88-shared",
+  "version": "1.0.0",
+  "description": "Shared TypeScript definitions for Optik88 POS",
+  "main": "types/index.ts",
+  "types": "types/index.ts",
+  "private": true
+}

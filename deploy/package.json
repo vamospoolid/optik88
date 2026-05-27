@@ -1,0 +1,9 @@
+{
+  "name": "optik88-deploy",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Deploy tools for Optik88",
+  "dependencies": {
+    "node-ssh": "^13.2.0"
+  }
+}

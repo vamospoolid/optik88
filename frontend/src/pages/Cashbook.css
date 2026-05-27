@@ -1,0 +1,278 @@
+/* ═══════════════════════════════════════════════════
+   Cashbook Page — Premium CSS
+═══════════════════════════════════════════════════ */
+
+.cashbook-page {
+  padding: 1.5rem;
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* ── Hero ── */
+.cb-hero {
+  background: var(--hero-gradient);
+  border-radius: 20px;
+  padding: 1.75rem 2rem;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 1.5rem;
+  color: white;
+  box-shadow: 0 8px 32px rgba(15, 23, 42, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.cb-hero::before {
+  content: '';
+  position: absolute;
+  top: -100px;
+  right: -50px;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(79,70,229,0.15) 0%, transparent 70%);
+}
+
+.cb-hero-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+  flex: 1;
+}
+
+.cb-hero-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.cb-hero-icon {
+  width: 56px;
+  height: 56px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.15);
+  flex-shrink: 0;
+}
+
+.cb-hero-title h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 0.25rem;
+  letter-spacing: -0.02em;
+  color: white;
+}
+
+.cb-hero-title p { margin: 0; color: rgba(255,255,255,0.7); font-size: 0.875rem; }
+
+.cb-net-balance {
+  margin-top: auto;
+}
+
+.cb-net-balance .label {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.25rem;
+}
+
+.cb-net-balance .amount {
+  font-size: 2.5rem;
+  font-weight: 800;
+  line-height: 1;
+  color: #34d399; /* Emerald */
+}
+
+/* ── Hero Stats Right ── */
+.cb-hero-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  background: rgba(0,0,0,0.2);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.cb-stat { display: flex; flex-direction: column; gap: 0.2rem; }
+.cb-stat-num { font-size: 1.25rem; font-weight: 800; line-height: 1; color: white; }
+.cb-stat-label { font-size: 0.7rem; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 0.04em; white-space: nowrap; }
+.cb-stat-div { width: 1px; height: 32px; background: rgba(255,255,255,0.1); }
+
+.text-emerald { color: #34d399 !important; }
+.text-indigo { color: #818cf8 !important; }
+.text-rose { color: #fb7185 !important; }
+
+@media (max-width: 900px) {
+  .cb-hero { flex-direction: column; align-items: flex-start; }
+  .cb-hero-right { width: 100%; justify-content: space-between; flex-wrap: wrap; }
+}
+
+/* Action Buttons */
+.action-buttons-row {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.btn-action {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-expense { color: var(--danger); border-color: #fecaca; }
+.btn-expense:hover, .btn-expense.active { background: var(--danger); color: white; border-color: var(--danger); }
+
+.btn-income { color: var(--success); border-color: #a7f3d0; }
+.btn-income:hover, .btn-income.active { background: var(--success); color: white; border-color: var(--success); }
+
+/* Form Card */
+.cashflow-form-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  margin-top: 0.5rem;
+}
+
+.cashflow-form-card.expense { border-top: 4px solid var(--danger); }
+.cashflow-form-card.income { border-top: 4px solid var(--success); }
+
+.cf-form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-hover);
+}
+
+.cf-form-header h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.btn-close-form {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--text-tertiary);
+  cursor: pointer;
+}
+
+.btn-close-form:hover {
+  color: var(--text-primary);
+}
+
+.cf-form-body {
+  padding: 1.25rem;
+}
+
+/* History */
+.section-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.records-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.record-item {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  align-items: center;
+}
+
+.record-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.record-icon.income { background: #d1fae5; color: var(--success); }
+.record-icon.expense { background: #fee2e2; color: var(--danger); }
+
+.record-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.record-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.record-cat {
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.record-amount {
+  font-weight: 700;
+}
+
+.record-amount.income { color: var(--success); }
+.record-amount.expense { color: var(--danger); }
+
+.record-bottom {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.record-time {
+  color: var(--text-tertiary);
+}
+
+.empty-state-sm {
+  padding: 2rem;
+  text-align: center;
+  background: var(--surface);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-tertiary);
+  font-size: 0.875rem;
+}
