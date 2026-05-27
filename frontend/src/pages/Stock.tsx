@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { stockService } from '../services/api';
 import type { StockItem } from 'optik88-shared';
-import { Search, Plus, Filter, Edit3, ArrowUpRight, ShieldAlert, Loader2, Trash2 } from 'lucide-react';
+import { Search, Plus, Filter, Edit3, ArrowUpRight, ShieldAlert, Loader2, Trash2, Package } from 'lucide-react';
 import './Stock.css';
 
 const rp = (n: number) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(n);
