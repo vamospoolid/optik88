@@ -911,50 +911,81 @@ const NewOrderPage: React.FC = () => {
                     <div className="custom-item-trigger-row mt-3">
                       <button 
                         type="button" 
-                        className={`btn btn-sm ${showCustomItemForm ? 'btn-secondary' : 'btn-primary-light text-primary font-bold'}`} 
-                        style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', padding: '0.625rem', borderRadius: 'var(--radius-lg)' }}
+                        className={`custom-item-toggle-btn ${showCustomItemForm ? 'is-open' : ''}`}
                         onClick={() => setShowCustomItemForm(!showCustomItemForm)}
                       >
-                        <Plus size={16} /> {showCustomItemForm ? 'TUTUP FORM ITEM CUSTOM' : '➕ TAMBAH ITEM CUSTOM (LENSA GOSOKAN / JASA KHUSUS)'}
+                        <span className="custom-item-toggle-icon">
+                          {showCustomItemForm ? '✕' : '+'}
+                        </span>
+                        <span className="custom-item-toggle-text">
+                          {showCustomItemForm ? 'Tutup Panel Input Custom' : 'Tambah Item Custom / Lensa Gosokan'}
+                        </span>
+                        {!showCustomItemForm && <span className="custom-item-toggle-badge">Non-Stok</span>}
                       </button>
                     </div>
 
                     {showCustomItemForm && (
-                      <div className="custom-item-form-box mt-3 p-3 bg-surface-hover border rounded-lg animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', borderStyle: 'dashed' }}>
-                        <h4 className="font-bold text-xs" style={{ margin: 0, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Input Item Kustom (Lensa Gosokan / Frame Khusus)</h4>
-                        <div className="field-group">
-                          <label className="form-label text-xs" style={{ fontSize: '0.75rem' }}>Nama Item *</label>
-                          <input 
-                            type="text" 
-                            className="form-control" 
-                            placeholder="Contoh: Lensa Gosok Essilor Transitions Gen 8" 
-                            value={customName}
-                            onChange={e => setCustomName(e.target.value)}
-                          />
-                        </div>
-                        <div className="field-row-new" style={{ display: 'flex', gap: '0.5rem' }}>
-                          <div className="field-group flex-1" style={{ flex: 1 }}>
-                            <label className="form-label text-xs" style={{ fontSize: '0.75rem' }}>Kategori *</label>
-                            <select className="form-control" value={customCategory} onChange={e => setCustomCategory(e.target.value as 'frame' | 'lens' | 'service')}>
-                              <option value="lens">Lensa Gosokan</option>
-                              <option value="frame">Frame Kustom</option>
-                              <option value="service">Jasa Khusus</option>
-                            </select>
+                      <div className="custom-item-panel animate-fade-in">
+                        <div className="custom-item-panel-header">
+                          <div className="custom-item-panel-icon">🔭</div>
+                          <div>
+                            <h4 className="custom-item-panel-title">Item Kustom / Lensa Gosokan</h4>
+                            <p className="custom-item-panel-desc">Tambahkan lensa gosokan, frame khusus, atau jasa yang tidak ada di inventori stok.</p>
                           </div>
-                          <div className="field-group flex-1" style={{ flex: 1 }}>
-                            <label className="form-label text-xs" style={{ fontSize: '0.75rem' }}>Harga Jual (Rp) *</label>
+                        </div>
+
+                        <div className="custom-item-category-tabs">
+                          {([['lens', '🔭', 'Lensa Gosokan'], ['frame', '🕶', 'Frame Kustom'], ['service', '🔧', 'Jasa Khusus']] as [typeof customCategory, string, string][]).map(([val, icon, label]) => (
+                            <button
+                              key={val}
+                              type="button"
+                              className={`custom-cat-tab ${customCategory === val ? 'active' : ''} cat-tab-${val}`}
+                              onClick={() => setCustomCategory(val)}
+                            >
+                              <span>{icon}</span>
+                              <span>{label}</span>
+                            </button>
+                          ))}
+                        </div>
+
+                        <div className="custom-item-fields">
+                          <div className="field-group">
+                            <label className="form-label">Nama Item *</label>
                             <input 
-                              type="number" 
+                              type="text" 
                               className="form-control" 
-                              placeholder="0" 
-                              value={customPrice || ''}
-                              onChange={e => setCustomPrice(Number(e.target.value))}
+                              placeholder={customCategory === 'lens' ? 'Contoh: Lensa Essilor Transitions Gen 8 — Anti Radiasi' : customCategory === 'frame' ? 'Contoh: Frame Titanium Full Rim Kode A1' : 'Contoh: Jasa Pasang + Gosok Lensa Premium'}
+                              value={customName}
+                              onChange={e => setCustomName(e.target.value)}
                             />
                           </div>
+                          <div className="custom-item-price-row">
+                            <div className="field-group" style={{ flex: 1 }}>
+                              <label className="form-label">Harga Jual (Rp) *</label>
+                              <div className="custom-price-input-wrap">
+                                <span className="custom-price-prefix">Rp</span>
+                                <input 
+                                  type="number" 
+                                  className="form-control" 
+                                  placeholder="0" 
+                                  value={customPrice || ''}
+                                  onChange={e => setCustomPrice(Number(e.target.value))}
+                                  style={{ borderRadius: '0 var(--radius-md) var(--radius-md) 0', borderLeft: 'none' }}
+                                />
+                              </div>
+                            </div>
+                            {customPrice > 0 && (
+                              <div className="custom-price-preview">
+                                <span className="custom-price-preview-label">Total</span>
+                                <span className="custom-price-preview-val">{rp(customPrice)}</span>
+                              </div>
+                            )}
+                          </div>
                         </div>
+
                         <button 
                           type="button" 
-                          className="btn btn-primary" 
+                          className="custom-item-submit-btn" 
                           disabled={!customName.trim() || customPrice <= 0}
                           onClick={() => {
                             addCustomItem(customName.trim(), customCategory, customPrice);
@@ -963,6 +994,7 @@ const NewOrderPage: React.FC = () => {
                             setShowCustomItemForm(false);
                           }}
                         >
+                          <Plus size={16} />
                           Masukkan ke Keranjang
                         </button>
                       </div>
@@ -1184,22 +1216,67 @@ const NewOrderPage: React.FC = () => {
                     <div className="pos-section-label">Metode Pembayaran</div>
                     <div className="pos-method-grid">
                       {([
-                        { v: 'tunai',    l: '💵 Tunai',    color: '#059669' },
-                        { v: 'transfer', l: '📲 Transfer', color: '#4f46e5' },
-                        { v: 'debit',    l: '💳 Debit',    color: '#0891b2' },
-                        { v: 'kredit',   l: '💎 Kredit',   color: '#7c3aed' },
-                        { v: 'bpjs',     l: '🏥 BPJS',     color: '#d97706' },
-                      ] as {v: PaymentMethod; l: string; color: string}[]).map(m => (
+                        { v: 'tunai',    icon: '💵', l: 'Tunai',    desc: 'Cash / Uang Fisik',  color: '#059669', bg: '#ecfdf5', border: '#6ee7b7' },
+                        { v: 'qris',     icon: '📱', l: 'QRIS',     desc: 'Scan QR Code',       color: '#7c3aed', bg: '#f5f3ff', border: '#c4b5fd' },
+                        { v: 'transfer', icon: '🏦', l: 'Transfer', desc: 'Transfer Bank',      color: '#1d4ed8', bg: '#eff6ff', border: '#93c5fd' },
+                      ] as {v: PaymentMethod; icon: string; l: string; desc: string; color: string; bg: string; border: string}[]).map(m => (
                         <button
                           key={m.v}
                           type="button"
                           className={`pos-method-btn ${payMethod === m.v ? 'active' : ''}`}
-                          style={payMethod === m.v ? { borderColor: m.color, background: m.color + '15', color: m.color } : {}}
-                          onClick={() => { setPayMethod(m.v); if (m.v !== 'tunai') setPayAmount(total); }}
+                          style={payMethod === m.v ? { borderColor: m.border, background: m.bg, color: m.color, boxShadow: `0 0 0 3px ${m.border}50` } : {}}
+                          onClick={() => { setPayMethod(m.v); if (m.v !== 'tunai') setPayAmount(total - discount); }}
                         >
-                          {m.l}
+                          <span className="pay-method-icon">{m.icon}</span>
+                          <span className="pay-method-name">{m.l}</span>
+                          <span className="pay-method-desc">{m.desc}</span>
                         </button>
                       ))}
+                    </div>
+
+                    {/* Discount Input in Payment Step */}
+                    <div className="pos-discount-section">
+                      <div className="pos-section-label">Diskon Transaksi</div>
+                      <div className="pos-discount-input-row">
+                        <div className="pos-discount-input-wrap">
+                          <span className="pos-discount-prefix">Rp</span>
+                          <input
+                            type="number"
+                            className="pos-discount-input"
+                            value={discount || ''}
+                            onChange={e => setDiscount(Number(e.target.value))}
+                            placeholder="0"
+                          />
+                        </div>
+                        {subtotal > 0 && (
+                          <div className="pos-discount-presets">
+                            {[5, 10, 15, 20].map(pct => (
+                              <button
+                                key={pct}
+                                type="button"
+                                className={`pos-discount-preset-btn ${Math.round((discount / subtotal) * 100) === pct ? 'active' : ''}`}
+                                onClick={() => setDiscount(Math.round(subtotal * pct / 100))}
+                              >
+                                {pct}%
+                              </button>
+                            ))}
+                            <button
+                              type="button"
+                              className="pos-discount-preset-btn reset"
+                              onClick={() => setDiscount(0)}
+                            >
+                              Reset
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                      {discount > 0 && (
+                        <div className="pos-discount-summary">
+                          <span>Potongan aktif:</span>
+                          <strong className="pos-discount-amount">− {rp(discount)}</strong>
+                          <span className="pos-discount-pct">({subtotal > 0 ? Math.round((discount / subtotal) * 100) : 0}%)</span>
+                        </div>
+                      )}
                     </div>
 
                     {/* Amount Display */}

@@ -3,6 +3,14 @@
   "version": "1.0.0",
   "private": true,
   "description": "Deploy tools for Optik88",
+  "scripts": {
+    "update":     "node update.js",
+    "update:fe":  "node update.js --only=frontend",
+    "update:be":  "node update.js --only=backend",
+    "update:mob": "node update.js --only=mobile",
+    "deploy":     "node deploy.js",
+    "push":       "node push-github.js"
+  },
   "dependencies": {
     "node-ssh": "^13.2.0"
   }
