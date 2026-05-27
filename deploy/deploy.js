@@ -321,9 +321,9 @@ async function deployToVPS() {
   await remote('pm2 startup 2>&1 | tail -3', 'pm2 startup').catch(() => {});
 
   // ─ 3h. Nginx Config ──────────────────────────────────────
-  log('STEP 3h — Konfigurasi Nginx');
+  log('STEP 3h — Konfigurasi Nginx (Port 8080)');
   const nginxConf = `server {
-    listen 80 default_server;
+    listen 8080;
     server_name ${VPS.host} _;
 
     # Frontend Desktop App
@@ -357,7 +357,6 @@ async function deployToVPS() {
     cat > /etc/nginx/sites-available/optik88 << 'EOFNGINX'
 ${nginxConf}
 EOFNGINX
-    rm -f /etc/nginx/sites-enabled/default
     ln -sf /etc/nginx/sites-available/optik88 /etc/nginx/sites-enabled/optik88
     nginx -t 2>&1 && systemctl reload nginx 2>&1
   `, 'nginx config');
