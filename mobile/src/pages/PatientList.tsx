@@ -17,7 +17,6 @@ export default function PatientList() {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [gender, setGender] = useState<'male' | 'female'>('male');
-  const [nik, setNik] = useState('');
   const [birthDate, setBirthDate] = useState('');
   const [address, setAddress] = useState('');
   const [type, setType] = useState<'umum' | 'bpjs'>('umum');
@@ -45,7 +44,6 @@ export default function PatientList() {
     setName('');
     setPhone('');
     setGender('male');
-    setNik('');
     setBirthDate('');
     setAddress('');
     setType('umum');
@@ -66,10 +64,9 @@ export default function PatientList() {
       name: name.trim(),
       phone: phone.trim() || undefined,
       gender,
-      nik: nik.trim() || undefined,
       birth_date: birthDate || undefined,
       address: address.trim() || undefined,
-      bpjs_number: type === 'bpjs' ? bpjsNumber.trim() || undefined : undefined,
+      bpjs_number: type === 'bpjs' && bpjsNumber.trim() ? bpjsNumber.trim() : undefined,
     });
   };
 
@@ -225,28 +222,16 @@ export default function PatientList() {
 
                 {type === 'bpjs' && (
                   <div className="form-group animate-fade-in" style={{ padding: '10px', background: 'var(--info-light)', borderRadius: '12px', border: '1px solid var(--info)' }}>
-                    <label className="form-label text-primary font-bold">Nomor Kartu BPJS *</label>
+                    <label className="form-label text-primary font-bold">Nomor Kartu BPJS</label>
                     <input
                       type="text"
                       className="form-control"
                       placeholder="Masukkan No. BPJS Kesehatan"
                       value={bpjsNumber}
                       onChange={e => setBpjsNumber(e.target.value)}
-                      required
                     />
                   </div>
                 )}
-
-                <div className="form-group">
-                  <label className="form-label">NIK (KTP)</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="16 digit NIK"
-                    value={nik}
-                    onChange={e => setNik(e.target.value)}
-                  />
-                </div>
 
                 <div className="form-group">
                   <label className="form-label">Tanggal Lahir</label>

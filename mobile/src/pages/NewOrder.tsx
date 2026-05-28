@@ -36,7 +36,6 @@ export default function NewOrder() {
   const [npName, setNpName] = useState('');
   const [npPhone, setNpPhone] = useState('');
   const [npGender, setNpGender] = useState<'male'|'female'>('male');
-  const [npNik, setNpNik] = useState('');
   const [npBirthDate, setNpBirthDate] = useState('');
   const [npAddress, setNpAddress] = useState('');
   const [npType, setNpType] = useState<'umum'|'bpjs'>('umum');
@@ -126,7 +125,7 @@ export default function NewOrder() {
       queryClient.invalidateQueries({ queryKey: ['patients'] });
       setSelectedPatient(newP);
       setShowNewPatient(false);
-      setNpName(''); setNpPhone(''); setNpNik(''); setNpBirthDate(''); setNpAddress(''); setNpBpjsNumber('');
+      setNpName(''); setNpPhone(''); setNpBirthDate(''); setNpAddress(''); setNpBpjsNumber('');
       setStep(2); // Auto proceed to clinical examination step
     },
   });
@@ -136,7 +135,6 @@ export default function NewOrder() {
     createPatientMutation.mutate({
       name: npName.trim(), phone: npPhone.trim(),
       gender: npGender,
-      nik: npNik.trim() ? npNik.trim() : undefined,
       birth_date: npBirthDate.trim() ? npBirthDate.trim() : undefined,
       address: npAddress.trim() ? npAddress.trim() : undefined,
       bpjs_number: npType === 'bpjs' && npBpjsNumber.trim() ? npBpjsNumber.trim() : undefined,
@@ -360,17 +358,13 @@ export default function NewOrder() {
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                 <div className="form-group">
-                  <label className="form-label">NIK</label>
-                  <input className="form-control" placeholder="16 digit NIK" value={npNik} onChange={e => setNpNik(e.target.value)} />
-                </div>
-                <div className="form-group">
                   <label className="form-label">Tgl Lahir</label>
                   <input className="form-control" type="date" value={npBirthDate} onChange={e => setNpBirthDate(e.target.value)} />
                 </div>
               </div>
               {npType === 'bpjs' && (
                 <div className="form-group animate-fade-in">
-                  <label className="form-label" style={{ color: '#0891b2', fontWeight: 700 }}>No. Kartu BPJS *</label>
+                  <label className="form-label" style={{ color: '#0891b2', fontWeight: 700 }}>No. Kartu BPJS</label>
                   <input className="form-control" style={{ borderColor: '#06b6d4' }} placeholder="No. BPJS 13 digit" value={npBpjsNumber} onChange={e => setNpBpjsNumber(e.target.value)} />
                 </div>
               )}
@@ -381,7 +375,7 @@ export default function NewOrder() {
               <button
                 className="btn btn-primary btn-full ripple"
                 style={{ marginTop: '0.5rem', height: '44px' }}
-                disabled={!npName.trim() || !npPhone.trim() || (npType === 'bpjs' && !npBpjsNumber.trim()) || createPatientMutation.isPending}
+                disabled={!npName.trim() || !npPhone.trim() || createPatientMutation.isPending}
                 onClick={saveNewPatient}
               >
                 {createPatientMutation.isPending ? <><Loader2 size={16} className="animate-spin" /> Menyimpan...</> : <><UserPlus size={16} /> Daftarkan & Pilih Pasien</>}
