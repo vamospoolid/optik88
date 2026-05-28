@@ -6,9 +6,16 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Enable CORS for production domain
+  // Enable CORS for production domain and mobile app
   app.enableCors({
-    origin: ['http://optik.codenusa.id', 'https://optik.codenusa.id', 'http://localhost:5173', 'http://localhost:5174'],
+    origin: [
+      'http://optik.codenusa.id', 
+      'https://optik.codenusa.id', 
+      'http://localhost:5173', 
+      'http://localhost:5174',
+      'http://localhost',
+      'capacitor://localhost'
+    ],
     credentials: true,
   });
 
