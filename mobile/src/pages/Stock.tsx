@@ -185,9 +185,9 @@ export default function Stock() {
   return (
     <div className="page-scroll animate-fade-in" style={{ paddingBottom: '6rem' }}>
       {/* Premium Hero Header */}
-      <div className="hero-header" style={{ position: 'relative', paddingBottom: '2rem' }}>
+      <div className="hero-header" style={{ position: 'relative', paddingBottom: '3.5rem' }}>
         <h2 style={{ fontSize: '1.25rem', fontWeight: 800, margin: 0 }}>Stok Inventori</h2>
-        <p style={{ fontSize: '0.8rem', opacity: 0.9, marginTop: '4px' }}>Kelola katalog produk, lensa, & layanan</p>
+        <p style={{ fontSize: '0.8rem', opacity: 0.9, marginTop: '4px', maxWidth: '80%' }}>Kelola katalog produk, lensa, & layanan</p>
         <button 
           style={{ position: 'absolute', right: '16px', top: '16px', background: 'rgba(255,255,255,0.25)', color: 'white', borderRadius: '50%', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer', backdropFilter: 'blur(4px)' }} 
           onClick={() => setShowAddForm(true)}
@@ -196,9 +196,9 @@ export default function Stock() {
         </button>
       </div>
 
-      {/* Stats Widgets Panel - Shifted Up */}
-      <div style={{ display: 'flex', gap: '0.75rem', padding: '0 1rem', marginTop: '-1.5rem', overflowX: 'auto', paddingBottom: '0.5rem' }}>
-        <div style={{ flex: '0 0 130px', background: 'linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%)', padding: '12px', borderRadius: '16px', boxShadow: '0 4px 15px rgba(43,53,232,0.08)', border: '1px solid rgba(43,53,232,0.1)' }}>
+      {/* Stats Widgets Panel - 2x2 Grid Layout */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', padding: '0 1rem', marginTop: '-2.5rem', paddingBottom: '0.5rem', position: 'relative', zIndex: 10 }}>
+        <div style={{ background: 'linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%)', padding: '12px', borderRadius: '16px', boxShadow: '0 4px 15px rgba(43,53,232,0.08)', border: '1px solid rgba(43,53,232,0.1)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--primary)' }}>
             <div style={{ background: 'var(--primary-light)', padding: '4px', borderRadius: '8px' }}><Package size={14} /></div>
             <span style={{ fontSize: '0.65rem', fontWeight: 800 }}>TOTAL ITEM</span>
@@ -206,7 +206,15 @@ export default function Stock() {
           <div style={{ fontSize: '1.25rem', fontWeight: 800, marginTop: '6px', color: 'var(--text-primary)' }}>{stats.totalItems}</div>
         </div>
 
-        <div style={{ flex: '0 0 130px', background: 'linear-gradient(135deg, #ffffff 0%, #fffbeb 100%)', padding: '12px', borderRadius: '16px', boxShadow: '0 4px 15px rgba(180,83,9,0.05)', border: '1px solid rgba(245,158,11,0.2)' }}>
+        <div style={{ background: 'linear-gradient(135deg, #ffffff 0%, #ecfdf5 100%)', padding: '12px', borderRadius: '16px', boxShadow: '0 4px 15px rgba(4,120,87,0.05)', border: '1px solid rgba(16,185,129,0.2)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#047857' }}>
+            <div style={{ background: '#d1fae5', padding: '4px', borderRadius: '8px' }}><DollarSign size={14} /></div>
+            <span style={{ fontSize: '0.65rem', fontWeight: 800 }}>NILAI ASET</span>
+          </div>
+          <div style={{ fontSize: '1rem', fontWeight: 800, marginTop: '8px', color: '#047857' }}>{rp(stats.totalVal)}</div>
+        </div>
+
+        <div style={{ background: 'linear-gradient(135deg, #ffffff 0%, #fffbeb 100%)', padding: '12px', borderRadius: '16px', boxShadow: '0 4px 15px rgba(180,83,9,0.05)', border: '1px solid rgba(245,158,11,0.2)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#b45309' }}>
             <div style={{ background: '#fef3c7', padding: '4px', borderRadius: '8px' }}><AlertTriangle size={14} /></div>
             <span style={{ fontSize: '0.65rem', fontWeight: 800 }}>STOK MENIPIS</span>
@@ -214,20 +222,12 @@ export default function Stock() {
           <div style={{ fontSize: '1.25rem', fontWeight: 800, marginTop: '6px', color: '#b45309' }}>{stats.lowStock}</div>
         </div>
 
-        <div style={{ flex: '0 0 130px', background: 'linear-gradient(135deg, #ffffff 0%, #fef2f2 100%)', padding: '12px', borderRadius: '16px', boxShadow: '0 4px 15px rgba(185,28,28,0.05)', border: '1px solid rgba(239,68,68,0.2)' }}>
+        <div style={{ background: 'linear-gradient(135deg, #ffffff 0%, #fef2f2 100%)', padding: '12px', borderRadius: '16px', boxShadow: '0 4px 15px rgba(185,28,28,0.05)', border: '1px solid rgba(239,68,68,0.2)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#b91c1c' }}>
             <div style={{ background: '#fee2e2', padding: '4px', borderRadius: '8px' }}><AlertTriangle size={14} /></div>
             <span style={{ fontSize: '0.65rem', fontWeight: 800 }}>STOK HABIS</span>
           </div>
           <div style={{ fontSize: '1.25rem', fontWeight: 800, marginTop: '6px', color: '#b91c1c' }}>{stats.outOfStock}</div>
-        </div>
-
-        <div style={{ flex: '0 0 170px', background: 'linear-gradient(135deg, #ffffff 0%, #ecfdf5 100%)', padding: '12px', borderRadius: '16px', boxShadow: '0 4px 15px rgba(4,120,87,0.05)', border: '1px solid rgba(16,185,129,0.2)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#047857' }}>
-            <div style={{ background: '#d1fae5', padding: '4px', borderRadius: '8px' }}><DollarSign size={14} /></div>
-            <span style={{ fontSize: '0.65rem', fontWeight: 800 }}>ESTIMASI ASET</span>
-          </div>
-          <div style={{ fontSize: '1rem', fontWeight: 800, marginTop: '8px', color: '#047857' }}>{rp(stats.totalVal)}</div>
         </div>
       </div>
 
