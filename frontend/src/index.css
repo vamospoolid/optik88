@@ -272,6 +272,6 @@ input, textarea, select {
 @media (min-width: 768px) {
   body {
     padding-bottom: 0;
-    padding-left: 240px; /* Space for sidebar on desktop */
+    /* Sidebar offset is handled by main-content margin-left in Layout.css */
   }
 }
