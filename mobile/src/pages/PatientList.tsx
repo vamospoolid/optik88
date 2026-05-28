@@ -74,10 +74,10 @@ export default function PatientList() {
   };
 
   const filteredPatients = patients.filter(p =>
-    p.name.toLowerCase().includes(search.toLowerCase()) ||
-    (p.phone && p.phone.includes(search)) ||
-    (p.nik && p.nik.includes(search)) ||
-    (p.bpjs_number && p.bpjs_number.includes(search))
+    p.name?.toLowerCase().includes(search.toLowerCase()) ||
+    (p.phone && String(p.phone).includes(search)) ||
+    (p.nik && String(p.nik).includes(search)) ||
+    (p.bpjs_number && String(p.bpjs_number).includes(search))
   );
 
   return (

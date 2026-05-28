@@ -172,8 +172,10 @@ export default function NewOrder() {
   const sisa = useMemo(() => Math.max(0, total - payAmount), [total, payAmount]);
 
   const filteredPatients = patients.filter(p =>
-    p.name.toLowerCase().includes(patientSearch.toLowerCase()) ||
-    (p.phone && p.phone.includes(patientSearch))
+    p.name?.toLowerCase().includes(patientSearch.toLowerCase()) ||
+    (p.phone && String(p.phone).includes(patientSearch)) ||
+    (p.nik && String(p.nik).includes(patientSearch)) ||
+    (p.bpjs_number && String(p.bpjs_number).includes(patientSearch))
   );
 
   const filteredStock = stockItems.filter(item =>
