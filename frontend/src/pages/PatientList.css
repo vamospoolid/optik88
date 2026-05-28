@@ -1,5 +1,5 @@
-/* ── Layout Container ── */
 .patient-list-page {
+  /* padding removed to sync with Layout content-container */
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
