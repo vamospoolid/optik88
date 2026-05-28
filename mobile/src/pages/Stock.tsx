@@ -184,46 +184,50 @@ export default function Stock() {
 
   return (
     <div className="page-scroll animate-fade-in" style={{ paddingBottom: '6rem' }}>
-      {/* Top Bar */}
-      <div className="top-bar">
-        <span className="top-bar-title">Stok Inventori</span>
-        <button className="top-bar-action" onClick={() => setShowAddForm(true)} aria-label="Tambah Barang">
+      {/* Premium Hero Header */}
+      <div className="hero-header" style={{ position: 'relative', paddingBottom: '2rem' }}>
+        <h2 style={{ fontSize: '1.25rem', fontWeight: 800, margin: 0 }}>Stok Inventori</h2>
+        <p style={{ fontSize: '0.8rem', opacity: 0.9, marginTop: '4px' }}>Kelola katalog produk, lensa, & layanan</p>
+        <button 
+          style={{ position: 'absolute', right: '16px', top: '16px', background: 'rgba(255,255,255,0.25)', color: 'white', borderRadius: '50%', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer', backdropFilter: 'blur(4px)' }} 
+          onClick={() => setShowAddForm(true)}
+        >
           <Plus size={20} />
         </button>
       </div>
 
-      {/* Stats Widgets Panel */}
-      <div style={{ display: 'flex', gap: '0.625rem', padding: '0.875rem 1rem', overflowX: 'auto', background: 'var(--surface)', borderBottom: '1px solid var(--border)' }}>
-        <div style={{ flex: '0 0 120px', background: 'var(--primary-light)', padding: '10px', borderRadius: '14px', border: '1px solid var(--border)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--primary)' }}>
-            <Package size={13} />
-            <span style={{ fontSize: '0.625rem', fontWeight: 700 }}>TOTAL ITEM</span>
+      {/* Stats Widgets Panel - Shifted Up */}
+      <div style={{ display: 'flex', gap: '0.75rem', padding: '0 1rem', marginTop: '-1.5rem', overflowX: 'auto', paddingBottom: '0.5rem' }}>
+        <div style={{ flex: '0 0 130px', background: 'linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%)', padding: '12px', borderRadius: '16px', boxShadow: '0 4px 15px rgba(43,53,232,0.08)', border: '1px solid rgba(43,53,232,0.1)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--primary)' }}>
+            <div style={{ background: 'var(--primary-light)', padding: '4px', borderRadius: '8px' }}><Package size={14} /></div>
+            <span style={{ fontSize: '0.65rem', fontWeight: 800 }}>TOTAL ITEM</span>
           </div>
-          <div style={{ fontSize: '1.125rem', fontWeight: 800, marginTop: '2px', color: 'var(--text-primary)' }}>{stats.totalItems}</div>
+          <div style={{ fontSize: '1.25rem', fontWeight: 800, marginTop: '6px', color: 'var(--text-primary)' }}>{stats.totalItems}</div>
         </div>
 
-        <div style={{ flex: '0 0 120px', background: 'var(--warning-light)', padding: '10px', borderRadius: '14px', border: '1px solid #fef3c7' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#b45309' }}>
-            <AlertTriangle size={13} />
-            <span style={{ fontSize: '0.625rem', fontWeight: 700 }}>STOK MENIPIS</span>
+        <div style={{ flex: '0 0 130px', background: 'linear-gradient(135deg, #ffffff 0%, #fffbeb 100%)', padding: '12px', borderRadius: '16px', boxShadow: '0 4px 15px rgba(180,83,9,0.05)', border: '1px solid rgba(245,158,11,0.2)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#b45309' }}>
+            <div style={{ background: '#fef3c7', padding: '4px', borderRadius: '8px' }}><AlertTriangle size={14} /></div>
+            <span style={{ fontSize: '0.65rem', fontWeight: 800 }}>STOK MENIPIS</span>
           </div>
-          <div style={{ fontSize: '1.125rem', fontWeight: 800, marginTop: '2px', color: '#b45309' }}>{stats.lowStock}</div>
+          <div style={{ fontSize: '1.25rem', fontWeight: 800, marginTop: '6px', color: '#b45309' }}>{stats.lowStock}</div>
         </div>
 
-        <div style={{ flex: '0 0 120px', background: 'var(--danger-light)', padding: '10px', borderRadius: '14px', border: '1px solid #fee2e2' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#b91c1c' }}>
-            <AlertTriangle size={13} />
-            <span style={{ fontSize: '0.625rem', fontWeight: 700 }}>STOK HABIS</span>
+        <div style={{ flex: '0 0 130px', background: 'linear-gradient(135deg, #ffffff 0%, #fef2f2 100%)', padding: '12px', borderRadius: '16px', boxShadow: '0 4px 15px rgba(185,28,28,0.05)', border: '1px solid rgba(239,68,68,0.2)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#b91c1c' }}>
+            <div style={{ background: '#fee2e2', padding: '4px', borderRadius: '8px' }}><AlertTriangle size={14} /></div>
+            <span style={{ fontSize: '0.65rem', fontWeight: 800 }}>STOK HABIS</span>
           </div>
-          <div style={{ fontSize: '1.125rem', fontWeight: 800, marginTop: '2px', color: '#b91c1c' }}>{stats.outOfStock}</div>
+          <div style={{ fontSize: '1.25rem', fontWeight: 800, marginTop: '6px', color: '#b91c1c' }}>{stats.outOfStock}</div>
         </div>
 
-        <div style={{ flex: '0 0 160px', background: 'var(--success-light)', padding: '10px', borderRadius: '14px', border: '1px solid #d1fae5' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#047857' }}>
-            <DollarSign size={13} />
-            <span style={{ fontSize: '0.625rem', fontWeight: 700 }}>ESTIMASI ASET</span>
+        <div style={{ flex: '0 0 170px', background: 'linear-gradient(135deg, #ffffff 0%, #ecfdf5 100%)', padding: '12px', borderRadius: '16px', boxShadow: '0 4px 15px rgba(4,120,87,0.05)', border: '1px solid rgba(16,185,129,0.2)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#047857' }}>
+            <div style={{ background: '#d1fae5', padding: '4px', borderRadius: '8px' }}><DollarSign size={14} /></div>
+            <span style={{ fontSize: '0.65rem', fontWeight: 800 }}>ESTIMASI ASET</span>
           </div>
-          <div style={{ fontSize: '0.9375rem', fontWeight: 800, marginTop: '4px', color: '#047857' }}>{rp(stats.totalVal)}</div>
+          <div style={{ fontSize: '1rem', fontWeight: 800, marginTop: '8px', color: '#047857' }}>{rp(stats.totalVal)}</div>
         </div>
       </div>
 
@@ -316,61 +320,69 @@ export default function Stock() {
             return (
               <div
                 key={item.id}
-                className="card animate-fade-in"
+                className="card ripple"
                 style={{
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '0.5rem',
                   border: isEmpty
-                    ? '1.5px solid var(--danger)'
+                    ? '1.5px solid rgba(239,68,68,0.5)'
                     : isLow
-                    ? '1.5px solid var(--warning)'
+                    ? '1.5px solid rgba(245,158,11,0.5)'
                     : '1px solid var(--border)',
                   boxShadow: 'var(--shadow-sm)',
-                  borderRadius: '16px'
+                  borderRadius: '16px',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  background: isEmpty ? 'linear-gradient(to right, rgba(254,226,226,0.3), white)' : 'var(--surface)'
                 }}
               >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                  <div>
-                    <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
-                      <span className="badge badge-blue" style={{ fontSize: '0.5625rem', padding: '2px 8px' }}>
+                {isEmpty && <div style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: '4px', background: 'var(--danger)' }} />}
+                {isLow && !isEmpty && <div style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: '4px', background: 'var(--warning)' }} />}
+                {!isLow && !isEmpty && !isService && <div style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: '4px', background: 'var(--primary)' }} />}
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', paddingLeft: '8px' }}>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                      <span className="badge badge-blue" style={{ fontSize: '0.55rem', padding: '2px 8px', letterSpacing: '0.5px' }}>
                         {item.category?.toUpperCase()}
                       </span>
                       {!isService && (
                         <span
                           style={{
-                            fontSize: '0.5625rem',
-                            fontWeight: 700,
+                            fontSize: '0.55rem',
+                            fontWeight: 800,
                             padding: '2px 8px',
                             borderRadius: '10px',
                             background: statusBg,
-                            color: statusColor
+                            color: statusColor,
+                            letterSpacing: '0.5px'
                           }}
                         >
                           {statusText.toUpperCase()}
                         </span>
                       )}
                     </div>
-                    <h4 style={{ fontSize: '0.875rem', fontWeight: 800, marginTop: '6px', color: 'var(--text-primary)' }}>
+                    <h4 style={{ fontSize: '0.9375rem', fontWeight: 800, marginTop: '8px', color: 'var(--text-primary)', lineHeight: 1.2 }}>
                       {item.name}
                     </h4>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-                      SKU: <strong style={{ color: 'var(--text-primary)' }}>{item.sku}</strong>
+                    <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', display: 'block', marginTop: '4px' }}>
+                      SKU: <strong style={{ color: 'var(--text-primary)', fontFamily: 'monospace', fontSize: '0.75rem' }}>{item.sku}</strong>
                     </span>
                   </div>
 
-                  <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: '0.9375rem', fontWeight: 800, color: 'var(--primary)' }}>
+                  <div style={{ textAlign: 'right', paddingLeft: '8px' }}>
+                    <div style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--primary)' }}>
                       {rp(item.sell_price)}
                     </div>
                     {!isService && (
-                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', marginTop: '2px' }}>
-                        <span style={{ fontSize: '0.625rem', color: 'var(--text-muted)' }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', marginTop: '4px' }}>
+                        <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>
                           Beli: {rp(item.modal_price || 0)}
                         </span>
                         {margin > 0 && (
-                          <span style={{ fontSize: '0.625rem', color: '#047857', fontWeight: 700, background: '#d1fae5', padding: '1px 4px', borderRadius: '4px', marginTop: '2px' }}>
-                            Margin: +{margin}%
+                          <span style={{ fontSize: '0.65rem', color: '#047857', fontWeight: 800, background: '#d1fae5', padding: '2px 6px', borderRadius: '6px', marginTop: '4px' }}>
+                            +{margin}% Margin
                           </span>
                         )}
                       </div>
@@ -380,50 +392,44 @@ export default function Stock() {
 
                 {/* Progress bar level for stock */}
                 {!isService && (
-                  <div style={{ marginTop: '2px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.625rem', color: 'var(--text-secondary)', marginBottom: '3px' }}>
-                      <span>Level Batas Minimum ({item.min_stock})</span>
-                      <span>Stok: {item.stock}</span>
+                  <div style={{ marginTop: '8px', paddingLeft: '8px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.65rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '4px' }}>
+                      <span>Batas Min: {item.min_stock}</span>
+                      <span style={{ color: isEmpty ? 'var(--danger)' : isLow ? 'var(--warning)' : 'var(--primary)' }}>Sisa Stok: {item.stock}</span>
                     </div>
-                    <div style={{ width: '100%', height: '5px', background: 'var(--bg)', borderRadius: '10px', overflow: 'hidden' }}>
+                    <div style={{ width: '100%', height: '6px', background: 'var(--bg)', borderRadius: '10px', overflow: 'hidden' }}>
                       <div
                         style={{
                           width: `${Math.min(100, (item.stock / (item.min_stock || 1)) * 50)}%`,
                           height: '100%',
                           background: statusColor,
-                          borderRadius: '10px'
+                          borderRadius: '10px',
+                          transition: 'width 0.5s ease-in-out'
                         }}
                       />
                     </div>
                   </div>
                 )}
 
-                <div className="divider" style={{ margin: '4px 0' }} />
-
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div style={{ fontSize: '0.8125rem' }}>
-                    Stok Tersedia:{' '}
-                    <strong style={{ color: isEmpty ? 'var(--danger)' : isLow ? 'var(--warning)' : 'var(--success)', fontSize: '0.9375rem' }}>
-                      {isService ? '∞ (Jasa)' : item.stock}
-                    </strong>
-                  </div>
-
-                  <div style={{ display: 'flex', gap: '6px' }}>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginTop: '8px', paddingTop: '12px', borderTop: '1px dashed var(--border)', paddingLeft: '8px' }}>
+                  <div style={{ display: 'flex', gap: '8px' }}>
                     {!isService && (
                       <button
-                        className="btn btn-secondary btn-sm ripple"
-                        style={{ padding: '6px 12px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 700 }}
-                        onClick={() => setShowAdjustForm(item)}
+                        type="button"
+                        className="btn btn-sm ripple"
+                        style={{ padding: '6px 14px', borderRadius: '8px', fontSize: '0.75rem', fontWeight: 700, background: 'var(--bg)', color: 'var(--text-primary)', border: '1px solid var(--border)' }}
+                        onClick={(e) => { e.stopPropagation(); setShowAdjustForm(item); }}
                       >
                         Adjust
                       </button>
                     )}
                     <button
+                      type="button"
                       className="btn btn-primary btn-sm ripple"
-                      style={{ padding: '6px 12px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 700 }}
-                      onClick={() => handleOpenEdit(item)}
+                      style={{ padding: '6px 16px', borderRadius: '8px', fontSize: '0.75rem', fontWeight: 700 }}
+                      onClick={(e) => { e.stopPropagation(); handleOpenEdit(item); }}
                     >
-                      Edit
+                      Edit Data
                     </button>
                   </div>
                 </div>
