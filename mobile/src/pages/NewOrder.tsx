@@ -835,38 +835,48 @@ export default function NewOrder() {
 
       {/* STEP 4: PEMBAYARAN & CHECKOUT */}
       {step === 4 && (
-        <div style={{ padding: '1rem' }} className="animate-fade-in">
-          <h3 style={{ fontSize: '0.9375rem', fontWeight: 800, marginBottom: '0.25rem' }}>4. Billing & Pembayaran</h3>
-          <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '1.25rem' }}>Masukkan nominal pembayaran, diskon, dan metode pembayaran.</p>
-
-          <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', border: '1px solid var(--border)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}>
-              <span>Subtotal:</span>
-              <strong>{rp(subtotal)}</strong>
-            </div>
-
-            <div className="form-group" style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-              <label className="form-label" style={{ margin: 0 }}>Potongan Diskon (Rp)</label>
-              <input
-                type="number"
-                className="form-control"
-                style={{ width: '120px', textAlign: 'right', padding: '6px' }}
-                value={discount || ''}
-                onChange={e => setDiscount(parseFloat(e.target.value) || 0)}
-              />
-            </div>
-
-            <div className="divider" />
-
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.0625rem', color: 'var(--primary)' }}>
-              <span>Net Total:</span>
-              <strong style={{ fontSize: '1.125rem', fontWeight: 800 }}>{rp(total)}</strong>
+        <div style={{ padding: '1rem', paddingBottom: '6rem' }} className="animate-fade-in">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1.25rem' }}>
+            <div style={{ background: 'var(--primary)', color: 'white', width: '28px', height: '28px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '0.875rem' }}>4</div>
+            <div>
+              <h3 style={{ fontSize: '1.125rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>Checkout Pembayaran</h3>
+              <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', margin: 0 }}>Selesaikan transaksi untuk order ini.</p>
             </div>
           </div>
 
-          <div className="form-group" style={{ marginTop: '1.25rem' }}>
-            <label className="form-label">Metode Pembayaran</label>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
+          {/* Receipt Style Summary */}
+          <div style={{ background: 'linear-gradient(to bottom, #ffffff, #f8f9ff)', border: '1px dashed var(--primary)', borderRadius: '16px', padding: '1.25rem', boxShadow: '0 4px 20px rgba(43,53,232,0.06)', marginBottom: '1.5rem', position: 'relative' }}>
+            {/* Ticket Cutouts */}
+            <div style={{ position: 'absolute', left: '-8px', top: '50%', width: '16px', height: '16px', borderRadius: '50%', background: 'var(--bg)', borderRight: '1px dashed var(--primary)' }} />
+            <div style={{ position: 'absolute', right: '-8px', top: '50%', width: '16px', height: '16px', borderRadius: '50%', background: 'var(--bg)', borderLeft: '1px dashed var(--primary)' }} />
+
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem', color: 'var(--text-secondary)', marginBottom: '12px' }}>
+              <span>Subtotal Order</span>
+              <strong style={{ color: 'var(--text-primary)' }}>{rp(subtotal)}</strong>
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.875rem', marginBottom: '16px' }}>
+              <span style={{ color: 'var(--text-secondary)' }}>Diskon (Rp)</span>
+              <input
+                type="number"
+                style={{ width: '100px', textAlign: 'right', padding: '4px 8px', borderRadius: '6px', border: '1px solid var(--border)', background: 'white', outline: 'none', fontFamily: 'monospace', fontWeight: 600 }}
+                value={discount || ''}
+                onChange={e => setDiscount(parseFloat(e.target.value) || 0)}
+                placeholder="0"
+              />
+            </div>
+
+            <div style={{ borderTop: '2px dashed var(--border)', margin: '16px 0' }} />
+
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+              <span style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--primary)' }}>Net Total</span>
+              <strong style={{ fontSize: '1.5rem', fontWeight: 900, color: 'var(--primary)' }}>{rp(total)}</strong>
+            </div>
+          </div>
+
+          <div className="form-group" style={{ marginBottom: '1.5rem' }}>
+            <label className="form-label" style={{ fontSize: '0.875rem', fontWeight: 700 }}>Metode Pembayaran</label>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }}>
               {[
                 { id: 'tunai', label: 'Cash', icon: DollarSign },
                 { id: 'qris', label: 'QRIS', icon: ShieldCheck },
@@ -878,50 +888,79 @@ export default function NewOrder() {
                   <button
                     key={method.id}
                     type="button"
-                    className="btn btn-secondary btn-sm"
+                    className="ripple"
                     style={{
-                      borderRadius: '12px',
-                      background: isSelected ? 'var(--primary)' : 'var(--surface)',
-                      color: isSelected ? 'white' : 'var(--text-secondary)',
-                      border: '1px solid var(--border)',
+                      display: 'flex',
                       flexDirection: 'column',
-                      height: '60px',
-                      gap: '4px'
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '6px',
+                      height: '70px',
+                      borderRadius: '14px',
+                      border: isSelected ? '2px solid var(--primary)' : '1px solid var(--border)',
+                      background: isSelected ? 'var(--primary-light)' : 'white',
+                      color: isSelected ? 'var(--primary)' : 'var(--text-secondary)',
+                      fontWeight: isSelected ? 800 : 600,
+                      transition: 'all 0.2s',
+                      cursor: 'pointer'
                     }}
                     onClick={() => setPaymentMethod(method.id as any)}
                   >
-                    <Icon size={16} />
-                    <span style={{ fontSize: '0.6875rem' }}>{method.label}</span>
+                    <Icon size={20} />
+                    <span style={{ fontSize: '0.75rem' }}>{method.label}</span>
                   </button>
                 );
               })}
             </div>
           </div>
 
-          <div className="form-group" style={{ marginTop: '1.25rem' }}>
-            <label className="form-label">Nominal Dibayar (Rp) *</label>
+          <div className="form-group" style={{ marginBottom: '1.5rem' }}>
+            <label className="form-label" style={{ fontSize: '0.875rem', fontWeight: 700, display: 'flex', justifyContent: 'space-between' }}>
+              Nominal Bayar (Rp)
+              {sisa > 0 && <span style={{ color: 'var(--warning)', fontSize: '0.75rem', background: 'var(--warning-light)', padding: '2px 8px', borderRadius: '10px' }}>Kurang: {rp(sisa)}</span>}
+            </label>
+            
+            {/* Quick DP Buttons */}
+            <div style={{ display: 'flex', gap: '8px', marginBottom: '10px', overflowX: 'auto', paddingBottom: '4px' }}>
+              <button 
+                type="button" 
+                style={{ padding: '6px 12px', borderRadius: '8px', border: '1px solid var(--primary)', background: payAmount === total ? 'var(--primary)' : 'white', color: payAmount === total ? 'white' : 'var(--primary)', fontSize: '0.75rem', fontWeight: 700, flexShrink: 0 }}
+                onClick={() => setPayAmount(total)}
+              >
+                LUNAS
+              </button>
+              <button 
+                type="button" 
+                style={{ padding: '6px 12px', borderRadius: '8px', border: '1px solid var(--primary)', background: payAmount === Math.floor(total * 0.5) ? 'var(--primary)' : 'white', color: payAmount === Math.floor(total * 0.5) ? 'white' : 'var(--primary)', fontSize: '0.75rem', fontWeight: 700, flexShrink: 0 }}
+                onClick={() => setPayAmount(Math.floor(total * 0.5))}
+              >
+                DP 50%
+              </button>
+              <button 
+                type="button" 
+                style={{ padding: '6px 12px', borderRadius: '8px', border: '1px solid var(--primary)', background: payAmount === Math.floor(total * 0.3) ? 'var(--primary)' : 'white', color: payAmount === Math.floor(total * 0.3) ? 'white' : 'var(--primary)', fontSize: '0.75rem', fontWeight: 700, flexShrink: 0 }}
+                onClick={() => setPayAmount(Math.floor(total * 0.3))}
+              >
+                DP 30%
+              </button>
+            </div>
+
             <input
               type="number"
               className="form-control"
-              placeholder="Masukkan jumlah bayar"
+              style={{ fontSize: '1.25rem', fontWeight: 800, padding: '12px', textAlign: 'right', background: 'white', color: payAmount < total ? '#b45309' : 'var(--primary)' }}
+              placeholder="0"
               value={payAmount || ''}
               onChange={e => setPayAmount(parseFloat(e.target.value) || 0)}
               required
             />
           </div>
 
-          <div style={{ marginTop: '0.75rem', padding: '10px', background: sisa > 0 ? 'var(--warning-light)' : 'var(--success-light)', borderRadius: '12px', fontSize: '0.75rem', fontWeight: 600 }}>
-            {sisa > 0 ? (
-              <span className="text-warning">⚠️ Uang Muka (DP). Sisa Piutang: {rp(sisa)}</span>
-            ) : (
-              <span className="text-success">✅ Pembayaran Lunas</span>
-            )}
-          </div>
-
-          <div className="form-group" style={{ marginTop: '1.25rem' }}>
-            <label className="form-label">Catatan Tambahan Transaksi</label>
+          <div className="form-group" style={{ marginBottom: '2rem' }}>
+            <label className="form-label" style={{ fontSize: '0.875rem', fontWeight: 700 }}>Catatan Tambahan Transaksi</label>
             <textarea
               className="form-control"
+              style={{ background: 'white', border: '1px solid var(--border)' }}
               placeholder="Contoh: Pengambilan hari sabtu, Lensa gosok anti radiasi..."
               value={orderNotes}
               onChange={e => setOrderNotes(e.target.value)}
@@ -930,18 +969,32 @@ export default function NewOrder() {
 
           <button
             type="button"
-            className="btn btn-primary btn-full ripple"
-            style={{ marginTop: '2rem', height: '52px', borderRadius: 'var(--radius-md)' }}
+            className="btn btn-full ripple"
+            style={{ 
+              height: '56px', 
+              borderRadius: '16px', 
+              background: 'linear-gradient(135deg, var(--primary) 0%, #1a237e 100%)',
+              color: 'white',
+              fontSize: '1rem',
+              fontWeight: 800,
+              boxShadow: '0 8px 20px rgba(43,53,232,0.3)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px'
+            }}
             onClick={handleCheckout}
             disabled={checkoutMutation.isPending}
           >
             {checkoutMutation.isPending ? (
               <>
-                <Loader2 size={18} className="animate-spin" />
-                Melakukan Checkout...
+                <Loader2 size={20} className="animate-spin" />
+                Memproses Order...
               </>
             ) : (
-              'Checkout & Simpan Order'
+              <>
+                Simpan Transaksi {rp(payAmount)}
+              </>
             )}
           </button>
         </div>
