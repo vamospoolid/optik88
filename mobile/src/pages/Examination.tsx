@@ -456,153 +456,215 @@ export default function Examination() {
               </button>
             </div>
             <form onSubmit={handleCreate}>
-              <div className="sheet-body">
-                <div className="form-group">
-                  <label className="form-label">Pilih Pasien *</label>
-                  <select
-                    className="form-control"
-                    value={formPatientId}
-                    onChange={e => setFormPatientId(e.target.value)}
-                    required
-                  >
-                    <option value="">-- Pilih Pasien --</option>
-                    {patients.map(p => (
-                      <option key={p.id} value={p.id}>{p.name}</option>
-                    ))}
-                  </select>
-                </div>
+              <div className="sheet-body" style={{ background: '#F8FAFC', padding: '1.25rem', paddingBottom: '2.5rem' }}>
+                {/* Patient & Source Selection */}
+                <div style={{ background: 'var(--surface)', borderRadius: '16px', padding: '1.25rem', boxShadow: 'var(--shadow-sm)', marginBottom: '0.5rem' }}>
+                  <div className="form-group">
+                    <label className="form-label" style={{ color: 'var(--primary)', fontWeight: 700 }}>Pilih Pasien *</label>
+                    <div style={{ position: 'relative' }}>
+                      <select
+                        className="form-control"
+                        value={formPatientId}
+                        onChange={e => setFormPatientId(e.target.value)}
+                        required
+                        style={{ appearance: 'none', background: '#F1F5F9', border: '1px solid transparent', fontWeight: 600, paddingRight: '2.5rem' }}
+                      >
+                        <option value="">-- Pilih Pasien --</option>
+                        {patients.map(p => (
+                          <option key={p.id} value={p.id}>{p.name}</option>
+                        ))}
+                      </select>
+                      <ChevronDown size={18} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)', pointerEvents: 'none' }} />
+                    </div>
+                  </div>
 
-                <div className="form-group">
-                  <label className="form-label">Sumber Resep</label>
-                  <div className="flex" style={{ background: 'var(--bg)', borderRadius: '12px', padding: '4px', gap: '4px' }}>
-                    <button
-                      type="button"
-                      className="flex-1 btn btn-sm"
-                      style={{
-                        borderRadius: '8px',
-                        background: source === 'internal' ? 'var(--surface)' : 'transparent',
-                        color: source === 'internal' ? 'var(--primary)' : 'var(--text-secondary)',
-                        boxShadow: source === 'internal' ? 'var(--shadow-sm)' : 'none',
-                      }}
-                      onClick={() => setSource('internal')}
-                    >
-                      Pemeriksaan Internal
-                    </button>
-                    <button
-                      type="button"
-                      className="flex-1 btn btn-sm"
-                      style={{
-                        borderRadius: '8px',
-                        background: source === 'external' ? 'var(--surface)' : 'transparent',
-                        color: source === 'external' ? 'var(--primary)' : 'var(--text-secondary)',
-                        boxShadow: source === 'external' ? 'var(--shadow-sm)' : 'none',
-                      }}
-                      onClick={() => setSource('external')}
-                    >
-                      Resep Luar / Rujukan
-                    </button>
+                  <div className="form-group" style={{ marginTop: '1.25rem' }}>
+                    <label className="form-label" style={{ color: 'var(--primary)', fontWeight: 700 }}>Sumber Resep</label>
+                    <div className="flex" style={{ background: '#F1F5F9', borderRadius: '12px', padding: '4px', gap: '4px' }}>
+                      <button
+                        type="button"
+                        className="flex-1 btn btn-sm"
+                        style={{
+                          borderRadius: '8px',
+                          background: source === 'internal' ? 'var(--surface)' : 'transparent',
+                          color: source === 'internal' ? 'var(--primary)' : 'var(--text-secondary)',
+                          boxShadow: source === 'internal' ? '0 2px 8px rgba(0,0,0,0.06)' : 'none',
+                          fontWeight: source === 'internal' ? 700 : 500,
+                          padding: '0.625rem 0.5rem',
+                        }}
+                        onClick={() => setSource('internal')}
+                      >
+                        Pemeriksaan Internal
+                      </button>
+                      <button
+                        type="button"
+                        className="flex-1 btn btn-sm"
+                        style={{
+                          borderRadius: '8px',
+                          background: source === 'external' ? 'var(--surface)' : 'transparent',
+                          color: source === 'external' ? 'var(--primary)' : 'var(--text-secondary)',
+                          boxShadow: source === 'external' ? '0 2px 8px rgba(0,0,0,0.06)' : 'none',
+                          fontWeight: source === 'external' ? 700 : 500,
+                          padding: '0.625rem 0.5rem',
+                        }}
+                        onClick={() => setSource('external')}
+                      >
+                        Resep Luar / Rujukan
+                      </button>
+                    </div>
                   </div>
                 </div>
 
                 {source === 'external' && (
-                  <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', padding: '10px', background: '#F8FAFC', borderRadius: '12px', border: '1px solid var(--border)' }}>
+                  <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '1.25rem', background: '#FFFBEB', borderRadius: '16px', border: '1px solid #FEF3C7', marginBottom: '0.5rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                      <ShieldAlert size={18} style={{ color: '#D97706' }} />
+                      <h4 style={{ fontSize: '0.875rem', fontWeight: 800, color: '#D97706', margin: 0 }}>DATA RUJUKAN LUAR</h4>
+                    </div>
                     <div className="form-group">
-                      <label className="form-label">Jenis Lensa *</label>
-                      <select className="form-control" value={extType} onChange={e => setExtType(e.target.value as any)}>
+                      <label className="form-label" style={{ color: '#92400E' }}>Jenis Lensa *</label>
+                      <select className="form-control" value={extType} onChange={e => setExtType(e.target.value as any)} style={{ background: 'rgba(255,255,255,0.7)', border: '1px solid #FDE68A' }}>
                         <option value="monofocal">Monofocal</option>
                         <option value="bifocal">Bifocal</option>
                         <option value="progressive">Progressive</option>
                       </select>
                     </div>
                     <div className="form-group">
-                      <label className="form-label">Nama Dokter / Refraksionis *</label>
-                      <input type="text" className="form-control" placeholder="Nama Dr. / Dr. Sp.M" value={doctorName} onChange={e => setDoctorName(e.target.value)} required />
+                      <label className="form-label" style={{ color: '#92400E' }}>Nama Dokter / Refraksionis *</label>
+                      <input type="text" className="form-control" placeholder="Nama Dr. / Dr. Sp.M" value={doctorName} onChange={e => setDoctorName(e.target.value)} required style={{ background: 'rgba(255,255,255,0.7)', border: '1px solid #FDE68A' }} />
                     </div>
                     <div className="form-group">
-                      <label className="form-label">Fasilitas Kesehatan *</label>
-                      <input type="text" className="form-control" placeholder="Nama RS / Klinik" value={facilityName} onChange={e => setFacilityName(e.target.value)} required />
+                      <label className="form-label" style={{ color: '#92400E' }}>Fasilitas Kesehatan *</label>
+                      <input type="text" className="form-control" placeholder="Nama RS / Klinik" value={facilityName} onChange={e => setFacilityName(e.target.value)} required style={{ background: 'rgba(255,255,255,0.7)', border: '1px solid #FDE68A' }} />
                     </div>
                     <div className="form-group">
-                      <label className="form-label">Nomor Referensi Resep</label>
-                      <input type="text" className="form-control" placeholder="No. Resep" value={refNumber} onChange={e => setRefNumber(e.target.value)} />
+                      <label className="form-label" style={{ color: '#92400E' }}>Nomor Referensi Resep</label>
+                      <input type="text" className="form-control" placeholder="No. Resep (opsional)" value={refNumber} onChange={e => setRefNumber(e.target.value)} style={{ background: 'rgba(255,255,255,0.7)', border: '1px solid #FDE68A' }} />
                     </div>
                   </div>
                 )}
 
-                {/* OD Variables */}
-                <h4 style={{ fontSize: '0.8125rem', fontWeight: 800, color: 'var(--primary)', borderLeft: '3px solid var(--primary)', paddingLeft: '6px', margin: '4px 0 0 0' }}>MATA KANAN (OD)</h4>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
-                  <div className="form-group">
-                    <label className="form-label">SPH</label>
-                    <input type="text" className="form-control" value={odSph} onChange={e => setOdSph(e.target.value)} />
+                {/* Refraction Data */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '0.5rem' }}>
+                  {/* OD Card */}
+                  <div style={{ 
+                    background: 'linear-gradient(to right, rgba(43,53,232,0.04), #ffffff)', 
+                    borderRadius: '16px', 
+                    padding: '1.25rem', 
+                    border: '1px solid rgba(43,53,232,0.1)',
+                    borderLeft: '5px solid var(--primary)',
+                    boxShadow: 'var(--shadow-sm)'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+                      <div style={{ width: '28px', height: '28px', borderRadius: '8px', background: 'var(--primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 800, boxShadow: '0 2px 8px rgba(43,53,232,0.3)' }}>R</div>
+                      <h4 style={{ fontSize: '0.9375rem', fontWeight: 800, color: 'var(--primary)', margin: 0 }}>MATA KANAN (OD)</h4>
+                    </div>
+                    
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', marginBottom: '10px' }}>
+                      <div className="form-group">
+                        <label className="form-label" style={{ fontSize: '0.6875rem', textAlign: 'center', letterSpacing: '0.5px' }}>SPH</label>
+                        <input type="text" className="form-control" style={{ textAlign: 'center', fontWeight: 700, background: '#F8FAFC', padding: '0.625rem', border: '1px solid #E2E8F0' }} value={odSph} onChange={e => setOdSph(e.target.value)} />
+                      </div>
+                      <div className="form-group">
+                        <label className="form-label" style={{ fontSize: '0.6875rem', textAlign: 'center', letterSpacing: '0.5px' }}>CYL</label>
+                        <input type="text" className="form-control" style={{ textAlign: 'center', fontWeight: 700, background: '#F8FAFC', padding: '0.625rem', border: '1px solid #E2E8F0' }} value={odCyl} onChange={e => setOdCyl(e.target.value)} />
+                      </div>
+                      <div className="form-group">
+                        <label className="form-label" style={{ fontSize: '0.6875rem', textAlign: 'center', letterSpacing: '0.5px' }}>AXIS</label>
+                        <input type="text" className="form-control" style={{ textAlign: 'center', fontWeight: 700, background: '#F8FAFC', padding: '0.625rem', border: '1px solid #E2E8F0' }} value={odAxis} onChange={e => setOdAxis(e.target.value)} />
+                      </div>
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                      <div className="form-group">
+                        <label className="form-label" style={{ fontSize: '0.6875rem', textAlign: 'center', letterSpacing: '0.5px' }}>ADD</label>
+                        <input type="text" className="form-control" style={{ textAlign: 'center', fontWeight: 700, background: '#F8FAFC', padding: '0.625rem', border: '1px solid #E2E8F0' }} value={odAdd} onChange={e => setOdAdd(e.target.value)} />
+                      </div>
+                      <div className="form-group">
+                        <label className="form-label" style={{ fontSize: '0.6875rem', textAlign: 'center', letterSpacing: '0.5px' }}>PD (Pupil Dist)</label>
+                        <input type="text" className="form-control" style={{ textAlign: 'center', fontWeight: 700, background: '#F8FAFC', padding: '0.625rem', border: '1px solid #E2E8F0' }} value={odPd} onChange={e => setOdPd(e.target.value)} />
+                      </div>
+                    </div>
                   </div>
-                  <div className="form-group">
-                    <label className="form-label">CYL</label>
-                    <input type="text" className="form-control" value={odCyl} onChange={e => setOdCyl(e.target.value)} />
-                  </div>
-                  <div className="form-group">
-                    <label className="form-label">AXIS</label>
-                    <input type="text" className="form-control" value={odAxis} onChange={e => setOdAxis(e.target.value)} />
-                  </div>
-                </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-                  <div className="form-group">
-                    <label className="form-label">ADD</label>
-                    <input type="text" className="form-control" value={odAdd} onChange={e => setOdAdd(e.target.value)} />
-                  </div>
-                  <div className="form-group">
-                    <label className="form-label">PD (Pupil Distance)</label>
-                    <input type="text" className="form-control" value={odPd} onChange={e => setOdPd(e.target.value)} />
+
+                  {/* OS Card */}
+                  <div style={{ 
+                    background: 'linear-gradient(to right, rgba(168,85,247,0.04), #ffffff)', 
+                    borderRadius: '16px', 
+                    padding: '1.25rem', 
+                    border: '1px solid rgba(168,85,247,0.1)',
+                    borderLeft: '5px solid #A855F7',
+                    boxShadow: 'var(--shadow-sm)'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+                      <div style={{ width: '28px', height: '28px', borderRadius: '8px', background: '#A855F7', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 800, boxShadow: '0 2px 8px rgba(168,85,247,0.3)' }}>L</div>
+                      <h4 style={{ fontSize: '0.9375rem', fontWeight: 800, color: '#A855F7', margin: 0 }}>MATA KIRI (OS)</h4>
+                    </div>
+                    
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', marginBottom: '10px' }}>
+                      <div className="form-group">
+                        <label className="form-label" style={{ fontSize: '0.6875rem', textAlign: 'center', letterSpacing: '0.5px' }}>SPH</label>
+                        <input type="text" className="form-control" style={{ textAlign: 'center', fontWeight: 700, background: '#F8FAFC', padding: '0.625rem', border: '1px solid #E2E8F0' }} value={osSph} onChange={e => setOsSph(e.target.value)} />
+                      </div>
+                      <div className="form-group">
+                        <label className="form-label" style={{ fontSize: '0.6875rem', textAlign: 'center', letterSpacing: '0.5px' }}>CYL</label>
+                        <input type="text" className="form-control" style={{ textAlign: 'center', fontWeight: 700, background: '#F8FAFC', padding: '0.625rem', border: '1px solid #E2E8F0' }} value={osCyl} onChange={e => setOsCyl(e.target.value)} />
+                      </div>
+                      <div className="form-group">
+                        <label className="form-label" style={{ fontSize: '0.6875rem', textAlign: 'center', letterSpacing: '0.5px' }}>AXIS</label>
+                        <input type="text" className="form-control" style={{ textAlign: 'center', fontWeight: 700, background: '#F8FAFC', padding: '0.625rem', border: '1px solid #E2E8F0' }} value={osAxis} onChange={e => setOsAxis(e.target.value)} />
+                      </div>
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                      <div className="form-group">
+                        <label className="form-label" style={{ fontSize: '0.6875rem', textAlign: 'center', letterSpacing: '0.5px' }}>ADD</label>
+                        <input type="text" className="form-control" style={{ textAlign: 'center', fontWeight: 700, background: '#F8FAFC', padding: '0.625rem', border: '1px solid #E2E8F0' }} value={osAdd} onChange={e => setOsAdd(e.target.value)} />
+                      </div>
+                      <div className="form-group">
+                        <label className="form-label" style={{ fontSize: '0.6875rem', textAlign: 'center', letterSpacing: '0.5px' }}>PD (Pupil Dist)</label>
+                        <input type="text" className="form-control" style={{ textAlign: 'center', fontWeight: 700, background: '#F8FAFC', padding: '0.625rem', border: '1px solid #E2E8F0' }} value={osPd} onChange={e => setOsPd(e.target.value)} />
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                {/* OS Variables */}
-                <h4 style={{ fontSize: '0.8125rem', fontWeight: 800, color: '#A855F7', borderLeft: '3px solid #A855F7', paddingLeft: '6px', margin: '4px 0 0 0' }}>MATA KIRI (OS)</h4>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
-                  <div className="form-group">
-                    <label className="form-label">SPH</label>
-                    <input type="text" className="form-control" value={osSph} onChange={e => setOsSph(e.target.value)} />
-                  </div>
-                  <div className="form-group">
-                    <label className="form-label">CYL</label>
-                    <input type="text" className="form-control" value={osCyl} onChange={e => setOsCyl(e.target.value)} />
-                  </div>
-                  <div className="form-group">
-                    <label className="form-label">AXIS</label>
-                    <input type="text" className="form-control" value={osAxis} onChange={e => setOsAxis(e.target.value)} />
-                  </div>
-                </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-                  <div className="form-group">
-                    <label className="form-label">ADD</label>
-                    <input type="text" className="form-control" value={osAdd} onChange={e => setOsAdd(e.target.value)} />
-                  </div>
-                  <div className="form-group">
-                    <label className="form-label">PD (Pupil Distance)</label>
-                    <input type="text" className="form-control" value={osPd} onChange={e => setOsPd(e.target.value)} />
-                  </div>
+                <div className="form-group" style={{ marginTop: '1.25rem' }}>
+                  <label className="form-label" style={{ fontWeight: 700, color: 'var(--text-primary)' }}>Catatan Tambahan Klinis</label>
+                  <textarea 
+                    className="form-control" 
+                    placeholder="Tulis keluhan pasien, riwayat alergi, atau rekomendasi tipe lensa (opsional)..." 
+                    value={notes} 
+                    onChange={e => setNotes(e.target.value)}
+                    style={{ background: 'var(--surface)', minHeight: '100px', border: '1px solid #CBD5E1', borderRadius: '12px' }}
+                  />
                 </div>
 
-                <div className="form-group">
-                  <label className="form-label">Catatan Hasil Pemeriksaan</label>
-                  <textarea className="form-control" placeholder="Keluhan pasien, rekomendasi tipe lensa kustom, dll..." value={notes} onChange={e => setNotes(e.target.value)} />
+                <div style={{ 
+                  position: 'sticky', 
+                  bottom: '-2rem', 
+                  background: 'linear-gradient(to top, #F8FAFC 80%, transparent)', 
+                  paddingTop: '2rem', 
+                  marginTop: '0.5rem',
+                  zIndex: 10
+                }}>
+                  <button
+                    type="submit"
+                    className="btn btn-primary btn-full ripple"
+                    style={{ height: '54px', fontSize: '1rem', borderRadius: '16px', boxShadow: '0 8px 24px rgba(43,53,232,0.35)' }}
+                    disabled={createMutation.isPending}
+                  >
+                    {createMutation.isPending ? (
+                      <>
+                        <Loader2 size={20} className="animate-spin" />
+                        Menyimpan Data...
+                      </>
+                    ) : (
+                      <>
+                        <Check size={20} />
+                        Simpan Hasil Refraksi
+                      </>
+                    )}
+                  </button>
                 </div>
-
-                <button
-                  type="submit"
-                  className="btn btn-primary btn-full ripple"
-                  style={{ marginTop: '0.5rem', height: '48px' }}
-                  disabled={createMutation.isPending}
-                >
-                  {createMutation.isPending ? (
-                    <>
-                      <Loader2 size={16} className="animate-spin" />
-                      Menyimpan...
-                    </>
-                  ) : (
-                    'Simpan Hasil Refraksi'
-                  )}
-                </button>
               </div>
             </form>
           </div>

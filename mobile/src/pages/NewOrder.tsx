@@ -46,6 +46,7 @@ export default function NewOrder() {
   const [skipExam, setSkipExam] = useState(false);
   const [rxSource, setRxSource] = useState<'internal' | 'external'>('internal');
   const [selectedInternalExam, setSelectedInternalExam] = useState<any>(null);
+  const [showNewInternalForm, setShowNewInternalForm] = useState(false);
   // Internal Exam Input (when no history)
   const [rxDateInt, setRxDateInt] = useState(new Date().toISOString().split('T')[0]);
   const [typeInt, setTypeInt] = useState<'monofocal'|'bifocal'|'progressive'>('monofocal');
@@ -232,9 +233,9 @@ export default function NewOrder() {
 
   const handleCheckout = () => {
     if (!selectedPatient || cart.length === 0) return;
-    const noHistory = patientExams.length === 0;
+    const isNewInternal = rxSource === 'internal' && (patientExams.length === 0 || showNewInternalForm);
     let newExamPayload: any = undefined;
-    if (!skipExam && rxSource === 'internal' && noHistory) {
+    if (!skipExam && isNewInternal) {
       newExamPayload = {
         exam: { patient_id: selectedPatient.id, source: 'internal' as const, exam_date: rxDateInt, notes: notesInt || undefined },
         prescription: {
@@ -523,9 +524,14 @@ export default function NewOrder() {
                 </div>
               </div>
 
-              {rxSource === 'internal' && patientExams.length > 0 && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                  <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', margin: 0 }}>Pilih riwayat pemeriksaan internal yang akan digunakan:</p>
+              {rxSource === 'internal' && patientExams.length > 0 && !showNewInternalForm && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', margin: 0 }}>Pilih riwayat pemeriksaan internal:</p>
+                    <button type="button" className="btn btn-sm" style={{ padding: '4px 8px', background: 'var(--primary-light)', color: 'var(--primary)', border: 'none', borderRadius: '6px', fontSize: '0.7rem', fontWeight: 700 }} onClick={() => { setShowNewInternalForm(true); setSelectedInternalExam(null); }}>
+                      + Pemeriksaan Baru
+                    </button>
+                  </div>
                   {patientExams.map((ex: any) => {
                     const isSelected = selectedInternalExam?.id === ex.id;
                     const rxData = ex.prescription?.details || ex.prescription_details;
@@ -553,12 +559,19 @@ export default function NewOrder() {
                 </div>
               )}
 
-              {rxSource === 'internal' && patientExams.length === 0 && (
-                <div className="card animate-fade-in" style={{ border: '2px solid var(--primary)', background: 'linear-gradient(135deg,rgba(43,53,232,0.04) 0%,white 100%)' }}>
+              {rxSource === 'internal' && (patientExams.length === 0 || showNewInternalForm) && (
+                <div className="card animate-fade-in" style={{ border: '2px solid var(--primary)', background: 'linear-gradient(135deg,rgba(43,53,232,0.04) 0%,white 100%)', marginBottom: '1rem' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1rem', padding: '8px 12px', background: 'var(--primary)', borderRadius: '10px' }}>
                     <Eye size={16} color="white" />
                     <span style={{ fontWeight: 800, fontSize: '0.8rem', color: 'white' }}>Input Pemeriksaan Internal Baru</span>
-                    <span style={{ marginLeft: 'auto', fontSize: '0.65rem', color: 'rgba(255,255,255,0.8)' }}>Pasien belum memiliki riwayat</span>
+                    {patientExams.length > 0 && (
+                      <button type="button" style={{ marginLeft: 'auto', background: 'transparent', border: 'none', color: 'white', padding: '4px', cursor: 'pointer' }} onClick={() => setShowNewInternalForm(false)}>
+                        <X size={16} />
+                      </button>
+                    )}
+                    {patientExams.length === 0 && (
+                      <span style={{ marginLeft: 'auto', fontSize: '0.65rem', color: 'rgba(255,255,255,0.8)' }}>Pasien belum memiliki riwayat</span>
+                    )}
                   </div>
                   <div className="form-group">
                     <label className="form-label">Tanggal Pemeriksaan</label>
@@ -709,7 +722,7 @@ export default function NewOrder() {
             className="btn btn-primary btn-full ripple"
             style={{ marginTop: '2rem', height: '48px' }}
             onClick={() => setStep(3)}
-            disabled={!skipExam && rxSource === 'internal' && patientExams.length > 0 && !selectedInternalExam}
+            disabled={!skipExam && rxSource === 'internal' && patientExams.length > 0 && !showNewInternalForm && !selectedInternalExam}
           >
             Lanjutkan Ke Pemilihan Produk <ChevronRight size={18} />
           </button>
