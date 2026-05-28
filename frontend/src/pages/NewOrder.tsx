@@ -399,7 +399,7 @@ const NewOrderPage: React.FC = () => {
 
                       {npType === 'bpjs' && (
                         <div className="field-group bpjs-field-highlight animate-fade-in">
-                          <label className="form-label text-primary font-bold">No. Kartu BPJS *</label>
+                          <label className="form-label text-primary font-bold">No. Kartu BPJS</label>
                           <input
                             className="form-control border-primary"
                             placeholder="Masukkan No. BPJS Kesehatan"
@@ -419,7 +419,7 @@ const NewOrderPage: React.FC = () => {
                       <button
                         className="btn btn-primary shadow-glow d-flex align-items-center gap-2"
                         onClick={saveNewPatient}
-                        disabled={createPatientMutation.isPending || !npName.trim() || !npPhone.trim() || (npType === 'bpjs' && !npBpjsNumber.trim())}
+                        disabled={createPatientMutation.isPending || !npName.trim() || !npPhone.trim()}
                       >
                         {createPatientMutation.isPending ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} />} 
                         Daftarkan & Pilih Pasien
