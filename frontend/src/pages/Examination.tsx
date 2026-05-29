@@ -31,8 +31,8 @@ interface ExamRecord {
   };
 }
 
-const fmt = (v?: number) => v !== undefined ? (v > 0 ? `+${v.toFixed(2)}` : v.toFixed(2)) : '—';
-const fmtAxis = (v?: number) => v !== undefined ? `${v}°` : '—';
+const fmt = (v?: number | null) => v != null ? (v > 0 ? `+${v.toFixed(2)}` : v.toFixed(2)) : '—';
+const fmtAxis = (v?: number | null) => v != null ? `${v}°` : '—';
 
 const Examination: React.FC = () => {
   const queryClient = useQueryClient();
