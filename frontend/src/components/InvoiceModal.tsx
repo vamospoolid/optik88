@@ -250,8 +250,35 @@ const InvoiceModal: React.FC<Props> = ({ trx, onClose }) => {
         <div className="modal-header">
           <h2>Preview Invoice</h2>
           <div style={{ display: 'flex', gap: '0.5rem' }}>
-            <button className="btn btn-secondary" onClick={handlePrintThermal}><Printer size={16} /> Cetak Struk (Thermal)</button>
-            <button className="btn btn-primary" onClick={handlePrintA4}><Printer size={16} /> Cetak A4 / PDF</button>
+            <button 
+              className="btn" 
+              style={{ background: '#25D366', color: 'white', border: 'none' }}
+              onClick={() => {
+                const phone = patient?.phone;
+                if (!phone) { alert('No HP Pasien tidak tersedia.'); return; }
+                let cleaned = phone.replace(/\D/g, '');
+                if (cleaned.startsWith('0')) cleaned = '62' + cleaned.slice(1);
+                
+                const sisa = Math.max(0, trx.total_amount - trx.paid_amount);
+                const sisaText = sisa > 0 ? `Sisa Piutang (DP): *${rp(sisa)}*` : `Status Pembayaran: *LUNAS*`;
+                
+                const waMsg = encodeURIComponent(`Halo Kak *${patient?.name || 'Pelanggan'}*, terima kasih telah berbelanja di *Optik 88*.
+
+Berikut adalah *Invoice Digital* pesanan Anda:
+👉 https://optik.codenusa.id/invoice/${trx.id}
+
+${sisaText}
+Status Pengerjaan: *${trx.order_status?.toUpperCase()}*
+
+Anda bisa mengklik link di atas kapan saja untuk melihat detail pesanan, rincian pembayaran, dan resep kacamata Anda.
+Semoga sehat selalu! 😊`);
+                window.open(`https://wa.me/${cleaned}?text=${waMsg}`, '_blank');
+              }}
+            >
+              Kirim ke WA
+            </button>
+            <button className="btn btn-secondary" onClick={handlePrintThermal}><Printer size={16} /> Struk</button>
+            <button className="btn btn-primary" onClick={handlePrintA4}><Printer size={16} /> A4</button>
             <button className="btn-icon" onClick={onClose}><X size={20} /></button>
           </div>
         </div>

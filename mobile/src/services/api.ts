@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-// Force absolute URL for Capacitor Mobile APK
+// Force absolute URL for Capacitor Mobile APK → Production VPS
 const baseURL = import.meta.env.VITE_API_URL || 'https://optik.codenusa.id/api';
 const api = axios.create({ baseURL });
 

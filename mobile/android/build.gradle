@@ -22,6 +22,15 @@ allprojects {
         google()
         mavenCentral()
     }
+    // Override Java 17 untuk semua subproject (capacitor butuh 21, tapi kita punya JDK 17)
+    plugins.withType(com.android.build.gradle.BasePlugin).configureEach {
+        android {
+            compileOptions {
+                sourceCompatibility JavaVersion.VERSION_17
+                targetCompatibility JavaVersion.VERSION_17
+            }
+        }
+    }
 }
 
 task clean(type: Delete) {

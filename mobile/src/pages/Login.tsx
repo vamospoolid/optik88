@@ -24,8 +24,16 @@ export default function Login() {
       loginStore(response.user, response.accessToken || response.token);
       navigate('/');
     } catch (err: any) {
-      console.error(err);
-      setError(err.response?.data?.message || 'Username atau password salah.');
+      console.error('Login error:', err);
+      if (err.code === 'ERR_NETWORK' || err.message === 'Network Error') {
+        setError('Tidak dapat terhubung ke server. Periksa koneksi internet Anda.');
+      } else if (err.code === 'ECONNABORTED') {
+        setError('Koneksi timeout. Server tidak merespons.');
+      } else if (err.response?.status === 401) {
+        setError('Username atau password salah.');
+      } else {
+        setError(`Error: ${err.response?.data?.message || err.message || 'Terjadi kesalahan tidak diketahui.'}`);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -106,9 +114,13 @@ export default function Login() {
                 style={{ paddingLeft: '2.75rem' }}
                 placeholder="Owner / Admin / Kasir"
                 value={username}
-                onChange={e => setUsername(e.target.value)}
+                onChange={e => setUsername(e.target.value.trim())}
                 disabled={isLoading}
                 required
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
+                autoComplete="username"
               />
             </div>
           </div>
@@ -126,6 +138,10 @@ export default function Login() {
                 onChange={e => setPassword(e.target.value)}
                 disabled={isLoading}
                 required
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
+                autoComplete="current-password"
               />
             </div>
           </div>

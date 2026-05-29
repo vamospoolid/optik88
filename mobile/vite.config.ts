@@ -28,7 +28,7 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
         runtimeCaching: [
           {
-            urlPattern: /^http:\/\/localhost:3000\/api\/.*/i,
+            urlPattern: /^https:\/\/optik\.codenusa\.id\/api\/.*/i,
             handler: 'NetworkFirst',
             options: { cacheName: 'api-cache', expiration: { maxAgeSeconds: 60 * 5 } },
           },

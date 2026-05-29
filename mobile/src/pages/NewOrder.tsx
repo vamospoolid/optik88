@@ -37,6 +37,7 @@ export default function NewOrder() {
   const [npPhone, setNpPhone] = useState('');
   const [npGender, setNpGender] = useState<'male'|'female'>('male');
   const [npBirthDate, setNpBirthDate] = useState('');
+  const [npAge, setNpAge] = useState('');
   const [npAddress, setNpAddress] = useState('');
   const [npType, setNpType] = useState<'umum'|'bpjs'>('umum');
   const [npBpjsNumber, setNpBpjsNumber] = useState('');
@@ -99,6 +100,11 @@ export default function NewOrder() {
     queryFn: examinationsService.getAll,
   });
 
+  const { data: transactions = [] } = useQuery<any[]>({
+    queryKey: ['transactions'],
+    queryFn: transactionsService.getAll,
+  });
+
   const { data: stockItems = [] } = useQuery<any[]>({
     queryKey: ['stock'],
     queryFn: stockService.getAll,
@@ -124,8 +130,9 @@ export default function NewOrder() {
     onSuccess: (newP: any) => {
       queryClient.invalidateQueries({ queryKey: ['patients'] });
       setSelectedPatient(newP);
+      setSelectedInternalExam(null);
       setShowNewPatient(false);
-      setNpName(''); setNpPhone(''); setNpBirthDate(''); setNpAddress(''); setNpBpjsNumber('');
+      setNpName(''); setNpPhone(''); setNpBirthDate(''); setNpAge(''); setNpAddress(''); setNpBpjsNumber('');
       setStep(2); // Auto proceed to clinical examination step
     },
   });
@@ -145,14 +152,18 @@ export default function NewOrder() {
   const checkoutMutation = useMutation({
     mutationFn: async (payload: any) => {
       let linkedRxId: string | undefined;
-      if (!payload._skipExam && payload._rxSource === 'internal' && !payload._selectedExamId && payload._newExam) {
+      
+      // If we are creating a NEW exam (internal or external)
+      if (!payload._skipExam && payload._newExam) {
         const res = await examinationsService.create(payload._newExam);
         linkedRxId = res.prescription?.id;
-      } else if (!payload._skipExam && payload._rxSource === 'internal' && payload._selectedExamId) {
-        // use existing exam - we need its prescription
-        linkedRxId = selectedInternalExam?.prescription?.id;
+      } 
+      // If we are using an EXISTING internal exam
+      else if (!payload._skipExam && payload._rxSource === 'internal' && payload._selectedExamId) {
+        linkedRxId = payload._prescriptionId;
       }
-      const { _skipExam, _rxSource, _selectedExamId, _newExam, ...trxData } = payload;
+      
+      const { _skipExam, _rxSource, _selectedExamId, _prescriptionId, _newExam, ...trxData } = payload;
       return transactionsService.create({ ...trxData, prescription_id: linkedRxId });
     },
     onSuccess: () => {
@@ -257,6 +268,7 @@ export default function NewOrder() {
     checkoutMutation.mutate({
       _skipExam: skipExam, _rxSource: rxSource,
       _selectedExamId: selectedInternalExam?.id,
+      _prescriptionId: selectedInternalExam?.prescription?.id,
       _newExam: newExamPayload || extExamPayload,
       patient_id: selectedPatient.id,
       items: cart.map(c => ({ product_type: c.product_type, product_id: c.product_id||null, name: c.name, original_price: c.original_price, sell_price: c.sell_price, qty: c.qty, subtotal: c.subtotal })),
@@ -359,7 +371,27 @@ export default function NewOrder() {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                 <div className="form-group">
                   <label className="form-label">Tgl Lahir</label>
-                  <input className="form-control" type="date" value={npBirthDate} onChange={e => setNpBirthDate(e.target.value)} />
+                  <input className="form-control" type="date" value={npBirthDate} onChange={e => {
+                    setNpBirthDate(e.target.value);
+                    if (e.target.value) {
+                      const age = new Date().getFullYear() - new Date(e.target.value).getFullYear();
+                      setNpAge(age.toString());
+                    } else {
+                      setNpAge('');
+                    }
+                  }} />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Atau Umur (Thn)</label>
+                  <input className="form-control" type="number" placeholder="Cth: 35" value={npAge} onChange={e => {
+                    setNpAge(e.target.value);
+                    if (e.target.value) {
+                      const year = new Date().getFullYear() - parseInt(e.target.value);
+                      setNpBirthDate(`${year}-01-01`);
+                    } else {
+                      setNpBirthDate('');
+                    }
+                  }} />
                 </div>
               </div>
               {npType === 'bpjs' && (
@@ -545,10 +577,63 @@ export default function NewOrder() {
                             {isSelected && <span className="badge badge-green" style={{ fontSize: '0.65rem' }}>✓ Terpilih</span>}
                           </div>
                         </div>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px', background: 'rgba(43,53,232,0.05)', borderRadius: '8px', padding: '8px', fontSize: '0.72rem', fontFamily: 'monospace' }}>
-                          <div><strong style={{ color: 'var(--primary)' }}>OD</strong> S:{od.sph ?? 0} C:{od.cyl ?? 0} A:{od.axis ?? 0}°</div>
-                          <div><strong style={{ color: '#7c3aed' }}>OS</strong> S:{os.sph ?? 0} C:{os.cyl ?? 0} A:{os.axis ?? 0}°</div>
-                        </div>
+                        {!isSelected ? (
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px', background: 'rgba(43,53,232,0.05)', borderRadius: '8px', padding: '8px', fontSize: '0.72rem', fontFamily: 'monospace' }}>
+                            <div><strong style={{ color: 'var(--primary)' }}>OD</strong> S:{od.sph ?? 0} C:{od.cyl ?? 0} A:{od.axis ?? 0}°</div>
+                            <div><strong style={{ color: '#7c3aed' }}>OS</strong> S:{os.sph ?? 0} C:{os.cyl ?? 0} A:{os.axis ?? 0}°</div>
+                          </div>
+                        ) : (() => {
+                          const linkedTrx = transactions.find(t => t.prescription_id === ex.prescription?.id);
+                          const boughtItems = linkedTrx?.items || [];
+                          
+                          return (
+                            <div className="animate-fade-in" style={{ marginTop: '8px' }}>
+                              <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
+                                <span className="badge badge-gray" style={{ fontSize: '0.75rem' }}>PD: {ex.prescription?.pd ?? '-'}mm</span>
+                                <span className="badge badge-gray" style={{ fontSize: '0.75rem' }}>Tipe: {ex.prescription?.type?.toUpperCase() ?? '-'}</span>
+                              </div>
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '10px' }}>
+                                <div style={{ background: 'rgba(43,53,232,0.1)', padding: '10px 12px', borderRadius: '8px', fontSize: '0.85rem' }}>
+                                  <strong style={{ color: 'var(--primary)', display: 'block', marginBottom: '6px' }}>👁 OD (Mata Kanan)</strong>
+                                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '4px', textAlign: 'center' }}>
+                                    <div><div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)' }}>SPH</div><div style={{ fontWeight: 800 }}>{od.sph ?? 0}</div></div>
+                                    <div><div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)' }}>CYL</div><div style={{ fontWeight: 800 }}>{od.cyl ?? 0}</div></div>
+                                    <div><div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)' }}>AXIS</div><div style={{ fontWeight: 800 }}>{od.axis ?? 0}°</div></div>
+                                    <div><div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)' }}>ADD</div><div style={{ fontWeight: 800 }}>{od.add_power ?? od.add ?? 0}</div></div>
+                                  </div>
+                                </div>
+                                <div style={{ background: 'rgba(124,58,237,0.1)', padding: '10px 12px', borderRadius: '8px', fontSize: '0.85rem' }}>
+                                  <strong style={{ color: '#7c3aed', display: 'block', marginBottom: '6px' }}>👁 OS (Mata Kiri)</strong>
+                                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '4px', textAlign: 'center' }}>
+                                    <div><div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)' }}>SPH</div><div style={{ fontWeight: 800 }}>{os.sph ?? 0}</div></div>
+                                    <div><div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)' }}>CYL</div><div style={{ fontWeight: 800 }}>{os.cyl ?? 0}</div></div>
+                                    <div><div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)' }}>AXIS</div><div style={{ fontWeight: 800 }}>{os.axis ?? 0}°</div></div>
+                                    <div><div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)' }}>ADD</div><div style={{ fontWeight: 800 }}>{os.add_power ?? os.add ?? 0}</div></div>
+                                  </div>
+                                </div>
+                              </div>
+                              
+                              {ex.notes && (
+                                <div style={{ fontSize: '0.75rem', marginBottom: '10px', padding: '8px 10px', background: '#fff', borderRadius: '6px', border: '1px solid var(--border)' }}>
+                                  <strong style={{ color: 'var(--text-secondary)' }}>Catatan Klinis: </strong> {ex.notes}
+                                </div>
+                              )}
+
+                              {boughtItems.length > 0 && (
+                                <div style={{ background: 'white', padding: '10px', borderRadius: '8px', border: '1px solid var(--border)' }}>
+                                  <strong style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '6px' }}>🛍️ Item dibeli saat resep ini:</strong>
+                                  <ul style={{ margin: 0, paddingLeft: '1.2rem', fontSize: '0.8rem', color: 'var(--text-primary)' }}>
+                                    {boughtItems.map((item: any) => (
+                                      <li key={item.id} style={{ marginBottom: '4px' }}>
+                                        {item.name} <span style={{ color: 'var(--text-muted)', fontWeight: 600 }}>x{item.qty}</span>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })()}
                       </div>
                     );
                   })}
@@ -714,14 +799,23 @@ export default function NewOrder() {
             </div>
           )}
 
-          <button
-            className="btn btn-primary btn-full ripple"
-            style={{ marginTop: '2rem', height: '48px' }}
-            onClick={() => setStep(3)}
-            disabled={!skipExam && rxSource === 'internal' && patientExams.length > 0 && !showNewInternalForm && !selectedInternalExam}
-          >
-            Lanjutkan Ke Pemilihan Produk <ChevronRight size={18} />
-          </button>
+          <div style={{ marginTop: '2rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+            <button
+              className="btn btn-primary btn-full ripple"
+              style={{ height: '48px' }}
+              onClick={() => setStep(3)}
+              disabled={!skipExam && rxSource === 'internal' && patientExams.length > 0 && !showNewInternalForm && !selectedInternalExam}
+            >
+              Lanjutkan Ke Pemilihan Produk <ChevronRight size={18} />
+            </button>
+            <button
+              className="btn btn-secondary btn-full ripple"
+              style={{ height: '48px', background: 'transparent', border: '1px solid var(--border)', color: 'var(--text-secondary)', fontWeight: 700 }}
+              onClick={() => setStep(1)}
+            >
+              Kembali ke Pilih Pasien
+            </button>
+          </div>
         </div>
       )}
 
@@ -818,18 +912,27 @@ export default function NewOrder() {
             ))}
           </div>
 
-          {cart.length > 0 && (
+          <div style={{ marginTop: '2rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+            {cart.length > 0 && (
+              <button
+                className="btn btn-primary btn-full ripple"
+                style={{ height: '48px' }}
+                onClick={() => {
+                  setStep(4);
+                  setPayAmount(total); // Default to full pay
+                }}
+              >
+                Lanjutkan Ke Pembayaran <ChevronRight size={18} />
+              </button>
+            )}
             <button
-              className="btn btn-primary btn-full ripple"
-              style={{ marginTop: '2rem', height: '48px' }}
-              onClick={() => {
-                setStep(4);
-                setPayAmount(total); // Default to full pay
-              }}
+              className="btn btn-secondary btn-full ripple"
+              style={{ height: '48px', background: 'transparent', border: '1px solid var(--border)', color: 'var(--text-secondary)', fontWeight: 700 }}
+              onClick={() => setStep(2)}
             >
-              Lanjutkan Ke Pembayaran <ChevronRight size={18} />
+              Kembali ke Rekam Klinis
             </button>
-          )}
+          </div>
         </div>
       )}
 
@@ -967,36 +1070,46 @@ export default function NewOrder() {
             />
           </div>
 
-          <button
-            type="button"
-            className="btn btn-full ripple"
-            style={{ 
-              height: '56px', 
-              borderRadius: '16px', 
-              background: 'linear-gradient(135deg, var(--primary) 0%, #1a237e 100%)',
-              color: 'white',
-              fontSize: '1rem',
-              fontWeight: 800,
-              boxShadow: '0 8px 20px rgba(43,53,232,0.3)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px'
-            }}
-            onClick={handleCheckout}
-            disabled={checkoutMutation.isPending}
-          >
-            {checkoutMutation.isPending ? (
-              <>
-                <Loader2 size={20} className="animate-spin" />
-                Memproses Order...
-              </>
-            ) : (
-              <>
-                Simpan Transaksi {rp(payAmount)}
-              </>
-            )}
-          </button>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+            <button
+              type="button"
+              className="btn btn-full ripple"
+              style={{ 
+                height: '56px', 
+                borderRadius: '16px', 
+                background: 'linear-gradient(135deg, var(--primary) 0%, #1a237e 100%)',
+                color: 'white',
+                fontSize: '1rem',
+                fontWeight: 800,
+                boxShadow: '0 8px 20px rgba(43,53,232,0.3)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px'
+              }}
+              onClick={handleCheckout}
+              disabled={checkoutMutation.isPending}
+            >
+              {checkoutMutation.isPending ? (
+                <>
+                  <Loader2 size={20} className="animate-spin" />
+                  Memproses Order...
+                </>
+              ) : (
+                <>
+                  Simpan Transaksi {rp(payAmount)}
+                </>
+              )}
+            </button>
+            <button
+              className="btn btn-secondary btn-full ripple"
+              style={{ height: '48px', borderRadius: '16px', background: 'transparent', border: '1px solid var(--border)', color: 'var(--text-secondary)', fontWeight: 700 }}
+              onClick={() => setStep(3)}
+              disabled={checkoutMutation.isPending}
+            >
+              Kembali ke Pemilihan Produk
+            </button>
+          </div>
         </div>
       )}
     </div>

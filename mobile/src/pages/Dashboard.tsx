@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import {
   UserPlus, Activity, ShoppingCart, Package, BookOpen, BarChart3,
   TrendingUp, Clock, AlertTriangle, ArrowRight, User, DollarSign,
-  LogOut, Wallet, ChevronRight
+  LogOut, Wallet, ChevronRight, MessageCircle
 } from 'lucide-react';
 import { transactionsService, patientsService, stockService, examinationsService } from '../services/api';
 import { useAuthStore } from '../store/useAuthStore';
@@ -64,6 +64,15 @@ export default function Dashboard() {
     ).length;
     return { todayRevenue, lowStockCount, pendingOrdersCount, totalPatients: patients.length };
   }, [transactions, patients, stockItems]);
+
+  const reminderPatients = useMemo(() => {
+    const sixMonthsAgo = new Date();
+    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+    return patients.filter(p => {
+      if (!p.created_at) return false;
+      return new Date(p.created_at) < sixMonthsAgo;
+    });
+  }, [patients]);
 
   const quickActions = [
     { icon: UserPlus,   label: 'Pasien Baru',  color: '#4F46E5', bg: '#EEF2FF', onClick: () => navigate('/pasien?add=true'), roles: ['admin','kasir','optometris'] },
@@ -447,6 +456,71 @@ export default function Dashboard() {
                   }}>
                     {isInternal ? 'Internal' : 'Rujukan'}
                   </span>
+                </div>
+              );
+            })
+          )}
+        </div>
+      </div>
+
+      {/* ── PENGINGAT CEK MATA (CRM) ── */}
+      <div style={{ padding:'1.375rem 1rem 2rem' }}>
+        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'0.75rem' }}>
+          <span style={{ fontSize:'0.875rem', fontWeight:800, color:'#1D4ED8' }}>Pengingat Cek Mata (6 Bln)</span>
+        </div>
+
+        <div style={{ display:'flex', flexDirection:'column', gap:'0.5rem' }}>
+          {reminderPatients.length === 0 ? (
+            <div style={{
+              background:'white', borderRadius:'16px', padding:'1.5rem', textAlign:'center',
+              boxShadow:'0 2px 10px rgba(0,0,0,0.05)', border: '1px solid #DBEAFE'
+            }}>
+              <p style={{ fontSize:'0.8125rem', color:'#9CA3AF', fontWeight:500 }}>Belum ada pasien yang melewati batas 6 bulan.</p>
+            </div>
+          ) : (
+            reminderPatients.slice(0, 3).map((pat: any) => {
+              return (
+                <div
+                  key={pat.id}
+                  style={{
+                    background:'white', borderRadius:'16px',
+                    padding:'0.875rem 1rem',
+                    display:'flex', alignItems:'center', gap:'0.875rem',
+                    boxShadow:'0 2px 10px rgba(0,0,0,0.05)',
+                    border: '1px solid #DBEAFE',
+                  }}
+                >
+                  <div style={{
+                    width:42, height:42, borderRadius:'13px', flexShrink:0,
+                    background: '#EFF6FF',
+                    display:'flex', alignItems:'center', justifyContent:'center',
+                  }}>
+                    <User size={19} color="#1D4ED8" />
+                  </div>
+                  <div style={{ flex:1, minWidth:0 }}>
+                    <div style={{ fontSize:'0.8125rem', fontWeight:700, color:'#1E40AF' }}>
+                      {pat.name}
+                    </div>
+                    <div style={{ fontSize:'0.6875rem', color:'#6B7280', marginTop:'2px' }}>
+                      Terakhir: {new Date(pat.created_at).toLocaleDateString('id-ID')}
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => {
+                      if (!pat.phone) return alert('No HP tidak tersedia');
+                      let cleaned = pat.phone.replace(/\\D/g, '');
+                      if (cleaned.startsWith('0')) cleaned = '62' + cleaned.slice(1);
+                      const waMsg = encodeURIComponent(`Halo Kak *${pat.name}*, dari catatan kami sudah lebih dari 6 bulan sejak kunjungan terakhir Anda ke *Optik 88*. \n\nYuk jadwalkan cek mata gratis untuk memastikan ukuran kacamata Anda masih nyaman! 😊`);
+                      window.open(`https://wa.me/${cleaned}?text=${waMsg}`, '_blank');
+                    }}
+                    style={{
+                      background: '#25D366', color: 'white', border: 'none',
+                      padding: '6px 12px', borderRadius: '8px', fontSize: '0.75rem',
+                      fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px'
+                    }}
+                  >
+                    <MessageCircle size={14} /> Sapa
+                  </button>
                 </div>
               );
             })

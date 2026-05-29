@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   Plus, Search, Printer, CheckCircle, Clock, Package, XCircle,
   ShoppingCart, Wrench, Glasses, CreditCard, Banknote, ArrowRight,
-  Loader2, Receipt, User, Calendar, ChevronDown, ChevronRight
+  Loader2, Receipt, User, Calendar, ChevronDown, ChevronRight, MessageCircle
 } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionsService, patientsService } from '../services/api';
@@ -298,6 +298,20 @@ const TrxDetailPanel: React.FC<PanelProps> = ({ trx, patients, onAdvanceStatus, 
   const products = (trx.items || []).filter((i: TrxItem) => i.product_type !== 'service');
   const services = (trx.items || []).filter((i: TrxItem) => i.product_type === 'service');
 
+  const handleWANotify = () => {
+    if (!patient?.phone) {
+      alert('No HP Pasien tidak tersedia.');
+      return;
+    }
+    let cleaned = patient.phone.replace(/\\D/g, '');
+    if (cleaned.startsWith('0')) cleaned = '62' + cleaned.slice(1);
+    
+    const waMsg = encodeURIComponent(`Halo Kak *${patient.name || 'Pelanggan'}*, kacamata pesanan Anda (Invoice: ${trx.invoice_number}) di *Optik 88* sudah selesai dikerjakan dan siap untuk diambil! 😊
+
+Terima kasih atas kepercayaannya.`);
+    window.open(`https://wa.me/${cleaned}?text=${waMsg}`, '_blank');
+  };
+
   return (
     <div className="detail-panel-inline animate-fade-in">
       <div className="dpi-cols">
@@ -315,6 +329,11 @@ const TrxDetailPanel: React.FC<PanelProps> = ({ trx, patients, onAdvanceStatus, 
               </div>
             </div>
             <div className="dpi-header-right">
+              {trx.order_status === 'selesai' && (
+                <button className="btn-wa-notify" onClick={handleWANotify}>
+                  <MessageCircle size={14} /> Kabari Selesai
+                </button>
+              )}
               <span className="detail-pay-badge" style={{ color: ps.color, background: ps.bg }}>{ps.label}</span>
               <button className="btn-invoice" onClick={onOpenInvoice}>
                 <Printer size={14} /> Invoice

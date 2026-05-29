@@ -24,33 +24,20 @@ export default function TrxDetail() {
   };
 
   const generateWaInvoiceMessage = (trx: any, patientName: string) => {
-    const itemsText = (trx.items || []).map((item: any) => 
-      `• ${item.name} (${item.qty}x) - ${rp(item.sell_price)}`
-    ).join('\n');
-
+    const sisa = Math.max(0, trx.total_amount - trx.paid_amount);
+    const sisaText = sisa > 0 ? `Sisa Piutang (DP): *${rp(sisa)}*` : `Status Pembayaran: *LUNAS*`;
+    
     const text = 
-`*INVOICE TRANSAKSI - OPTIK 88*
+`Halo Kak *${patientName}*, terima kasih telah berbelanja di *Optik 88*.
 
-Halo Kak *${patientName}*, berikut adalah rincian invoice transaksi Anda:
+Berikut adalah *Invoice Digital* pesanan Anda:
+👉 https://optik.codenusa.id/invoice/${trx.id}
 
-*No. Invoice:* ${trx.invoice_number}
-*Tanggal:* ${new Date(trx.created_at).toLocaleDateString('id-ID')}
-*Status Pesanan:* ${trx.order_status?.toUpperCase()}
+${sisaText}
+Status Pengerjaan: *${trx.order_status?.toUpperCase()}*
 
-*Rincian Belanja:*
-${itemsText}
-
-*Subtotal:* ${rp(trx.total_amount + (trx.discount || 0))}
-*Diskon:* ${rp(trx.discount || 0)}
-*Total Akhir:* ${rp(trx.total_amount)}
-
-*Detail Pembayaran:*
-*Sudah Dibayar:* ${rp(trx.paid_amount)}
-*Sisa Pembayaran (Piutang):* ${rp(trx.remaining_amount)}
-*Status Bayar:* ${trx.payment_status?.toUpperCase()}
-*Metode:* ${trx.payment_method?.toUpperCase()}
-
-Terima kasih telah memercayakan kesehatan mata Anda di *Optik 88*. Semoga sehat selalu! 😊`;
+Anda bisa mengklik link di atas kapan saja untuk melihat detail pesanan, rincian pembayaran, dan resep kacamata Anda.
+Semoga sehat selalu! 😊`;
 
     return encodeURIComponent(text);
   };
@@ -331,6 +318,40 @@ Terima kasih telah memercayakan kesehatan mata Anda di *Optik 88*. Semoga sehat 
           <MessageSquare size={18} />
           <span>Kirim Invoice (WhatsApp)</span>
         </button>
+
+        {transaction.order_status === 'selesai' && (
+          <button
+            type="button"
+            className="btn btn-full ripple"
+            style={{
+              height: '48px',
+              background: '#059669',
+              color: 'white',
+              border: 'none',
+              borderRadius: '16px',
+              fontSize: '0.875rem',
+              fontWeight: 800,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              cursor: 'pointer',
+              boxShadow: '0 4px 12px rgba(5,150,105,0.3)',
+            }}
+            onClick={() => {
+              const waPhone = formatPhoneForWa(patient?.phone);
+              if (!waPhone) {
+                alert('Nomor HP pasien belum terisi atau tidak valid!');
+                return;
+              }
+              const waMsg = encodeURIComponent(`Halo Kak *${patient?.name || 'Pelanggan'}*, kacamata pesanan Anda (Invoice: ${transaction.invoice_number}) di *Optik 88* sudah selesai dikerjakan dan siap diambil! 😊\n\nTerima kasih atas kepercayaannya.`);
+              window.open(`https://wa.me/${waPhone}?text=${waMsg}`, '_blank');
+            }}
+          >
+            <Check size={18} />
+            <span>Kabari Kacamata Selesai</span>
+          </button>
+        )}
       </div>
 
       {/* Add Payment Modal Bottom Sheet */}

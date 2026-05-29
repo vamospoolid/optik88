@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Users, Activity, ShoppingBag, AlertTriangle, Plus, Loader2, Coins, Calendar, ArrowRight, Eye, BarChart2, Package } from 'lucide-react';
+import { Users, Activity, ShoppingBag, AlertTriangle, Plus, Loader2, Coins, Calendar, ArrowRight, Eye, BarChart2, Package, MessageCircle } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { patientsService, examinationsService, transactionsService, stockService } from '../services/api';
 import './Dashboard.css';
@@ -75,6 +75,15 @@ const Dashboard: React.FC = () => {
   const todayRevenue = todayTransactions.reduce((sum, t) => sum + t.paid_amount, 0);
   const totalRevenue = transactions?.reduce((sum, t) => sum + t.paid_amount, 0) || 0;
   const lowStockItems = stockItems?.filter((s) => s.category !== 'service' && s.stock <= s.min_stock) || [];
+
+  // CRM Reminder (Pasien > 6 bulan tidak transaksi/periksa)
+  const sixMonthsAgo = new Date();
+  sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+  
+  const reminderPatients = patients?.filter(p => {
+    if (!p.created_at) return false;
+    return new Date(p.created_at) < sixMonthsAgo;
+  }) || [];
 
   // Drawer breakdown — hanya 3 metode aktif: TUNAI, QRIS, TRANSFER
   const drawerMethods = [
@@ -479,6 +488,41 @@ const Dashboard: React.FC = () => {
               )}
             </div>
           )}
+
+          {/* CRM / Reminder Check-up */}
+          <div className="db-widget-card border-primary bg-primary-light-widget" style={{ borderColor: '#bfdbfe', background: '#eff6ff' }}>
+            <h3 className="widget-title text-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', color: '#1d4ed8' }}>
+              <Users size={18} /> Pengingat Cek Mata (6 Bulan)
+            </h3>
+            <p className="widget-subtitle">Pasien yang waktunya periksa ulang</p>
+            <div className="stock-alert-list" style={{ marginTop: '1rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              {reminderPatients.length > 0 ? (
+                reminderPatients.slice(0, 3).map((pat) => (
+                  <div key={pat.id} className="stock-alert-item" style={{ background: 'white', borderColor: '#dbeafe', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div className="stock-alert-info">
+                      <strong style={{ color: '#1e40af' }}>{pat.name}</strong>
+                      <span style={{ fontSize: '0.75rem' }}>Terakhir: {new Date(pat.created_at!).toLocaleDateString('id-ID')}</span>
+                    </div>
+                    <button 
+                      className="btn-wa-notify"
+                      style={{ padding: '0.3rem 0.5rem', fontSize: '0.7rem' }}
+                      onClick={() => {
+                        if (!pat.phone) return alert('No HP tidak tersedia');
+                        let cleaned = pat.phone.replace(/\\D/g, '');
+                        if (cleaned.startsWith('0')) cleaned = '62' + cleaned.slice(1);
+                        const waMsg = encodeURIComponent(`Halo Kak *${pat.name}*, dari catatan kami sudah lebih dari 6 bulan sejak kunjungan terakhir Anda ke *Optik 88*. \n\nYuk jadwalkan cek mata gratis untuk memastikan ukuran kacamata Anda masih nyaman! 😊`);
+                        window.open(`https://wa.me/${cleaned}?text=${waMsg}`, '_blank');
+                      }}
+                    >
+                      <MessageCircle size={12} /> Sapa via WA
+                    </button>
+                  </div>
+                ))
+              ) : (
+                <p style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>Belum ada pasien yang melewati batas 6 bulan.</p>
+              )}
+            </div>
+          </div>
         </div>
       </div>
 

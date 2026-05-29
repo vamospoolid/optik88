@@ -15,6 +15,8 @@ import Reports from './pages/Reports';
 import Cashbook from './pages/Cashbook';
 import Settings from './pages/Settings';
 
+import PublicInvoice from './pages/PublicInvoice';
+
 function App() {
   return (
     <AuthProvider>
@@ -22,6 +24,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/invoice/:id" element={<PublicInvoice />} />
           
           <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
             <Route index element={<Dashboard />} />
