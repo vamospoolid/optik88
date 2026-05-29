@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { patientsService, examinationsService } from '../services/api';
-import type { Patient } from 'optik88-shared';
+import type { Patient, EyeExamination, Prescription } from 'optik88-shared';
 import { Search, Activity, ArrowRightLeft, AlertCircle, Loader2, Plus, Eye, FileText, User, ChevronDown } from 'lucide-react';
 import ClinicalFormModal from '../components/ClinicalFormModal';
 import './Examination.css';
@@ -15,12 +15,6 @@ interface RxDetail {
   add_power?: number;
 }
 
-interface Prescription {
-  type?: string;
-  pd?: number;
-  details?: RxDetail[];
-}
-
 interface ExamRecord {
   id: string;
   patient_id: string;
@@ -30,7 +24,11 @@ interface ExamRecord {
   facility_name?: string;
   reference_number?: string;
   notes?: string;
-  prescription?: Prescription;
+  prescription?: {
+    type?: string;
+    pd?: number;
+    details?: RxDetail[];
+  };
 }
 
 const fmt = (v?: number) => v !== undefined ? (v > 0 ? `+${v.toFixed(2)}` : v.toFixed(2)) : '—';
@@ -104,7 +102,7 @@ const Examination: React.FC = () => {
     return acc;
   }, {} as Record<string, { patientName: string; exams: ExamRecord[] }>);
 
-  const handleSaveExam = async (exam: Partial<ExamRecord>, rx: Prescription & { details: RxDetail[] }) => {
+  const handleSaveExam = async (exam: EyeExamination, prescription: Prescription) => {
     await saveExamMutation.mutateAsync({
       exam: {
         patient_id: exam.patient_id,
@@ -116,11 +114,11 @@ const Examination: React.FC = () => {
         notes: exam.notes || undefined,
       },
       prescription: {
-        type: rx.type,
-        pd: rx.pd || undefined,
-        details: rx.details.map((d: RxDetail) => ({
+        type: prescription.type,
+        pd: prescription.pd || undefined,
+        details: (prescription.details || []).map((d) => ({
           eye: d.eye,
-          sph: Number(d.sph),
+          sph: Number(d.sph) || 0,
           cyl: Number(d.cyl) || undefined,
           axis: Number(d.axis) || undefined,
           add_power: Number(d.add_power) || undefined,
