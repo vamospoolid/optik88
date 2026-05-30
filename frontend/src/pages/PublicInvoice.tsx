@@ -2,6 +2,7 @@ import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Loader2 } from 'lucide-react';
 import { transactionsService, patientsService, examinationsService } from '../services/api';
+import { useVenueStore } from '../store/useVenueStore';
 
 const rp = (n: number) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(n);
 
@@ -17,6 +18,7 @@ const formatAxis = (val?: number) => {
 
 export default function PublicInvoice() {
   const { id } = useParams<{ id: string }>();
+  const { venue } = useVenueStore();
 
   const { data: trx, isLoading: isLoadingTrx } = useQuery<any>({
     queryKey: ['public_transaction', id],
@@ -66,9 +68,11 @@ export default function PublicInvoice() {
         
         {/* Header */}
         <div style={{ textAlign: 'center', borderBottom: '2px solid #4F46E5', paddingBottom: '16px', marginBottom: '16px' }}>
-          <div style={{ fontFamily: '"Outfit", sans-serif', fontSize: '28px', fontWeight: 700, color: '#4F46E5' }}>Optik88</div>
-          <div style={{ fontSize: '12px', color: '#64748b' }}>Jl. Contoh No. 1, Jakarta</div>
-          <div style={{ fontSize: '12px', color: '#64748b' }}>Telp: 021-123456</div>
+          <div style={{ fontFamily: '"Outfit", sans-serif', fontSize: '28px', fontWeight: 700, color: '#4F46E5' }}>{venue.name}</div>
+          {venue.tagline && <div style={{ fontSize: '11px', color: '#64748b', marginTop: '2px' }}>{venue.tagline}</div>}
+          <div style={{ fontSize: '12px', color: '#64748b' }}>{venue.address}{venue.city ? `, ${venue.city}` : ''}</div>
+          <div style={{ fontSize: '12px', color: '#64748b' }}>Telp: {venue.phone}{venue.email ? ` · ${venue.email}` : ''}</div>
+          {venue.instagram && <div style={{ fontSize: '11px', color: '#94a3b8' }}>{venue.instagram}</div>}
           <div style={{ fontSize: '14px', fontWeight: 700, background: '#EEF2FF', padding: '6px 16px', borderRadius: '20px', display: 'inline-block', marginTop: '12px', color: '#4F46E5' }}>
             {trx.invoice_number}
           </div>
@@ -190,8 +194,8 @@ export default function PublicInvoice() {
 
         {/* Footer */}
         <div style={{ textAlign: 'center', fontSize: '12px', color: '#94A3B8', marginTop: '32px', borderTop: '1px solid #E2E8F0', paddingTop: '16px' }}>
-          <p>Terima kasih atas kepercayaan Anda</p>
-          <p style={{ marginTop: '4px' }}>Barang yang sudah dibeli tidak dapat ditukar atau dikembalikan.</p>
+          <p>{venue.notes}</p>
+          {venue.website && <p style={{ marginTop: '4px' }}>🌐 {venue.website}</p>}
         </div>
 
       </div>

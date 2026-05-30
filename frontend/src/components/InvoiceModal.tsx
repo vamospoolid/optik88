@@ -3,6 +3,7 @@ import { X, Printer } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { patientsService, examinationsService } from '../services/api';
 import type { Transaction, Patient } from 'optik88-shared';
+import { useVenueStore } from '../store/useVenueStore';
 import './InvoiceModal.css';
 
 const rp = (n: number) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(n);
@@ -21,6 +22,7 @@ interface Props { trx: Transaction; onClose: () => void; }
 
 const InvoiceModal: React.FC<Props> = ({ trx, onClose }) => {
   const printRef = useRef<HTMLDivElement>(null);
+  const { venue } = useVenueStore();
 
   // Fetch patients via React Query
   const { data: patients = [] } = useQuery<Patient[]>({
@@ -58,6 +60,7 @@ const InvoiceModal: React.FC<Props> = ({ trx, onClose }) => {
             .inv-logo { font-family: 'Outfit', sans-serif; font-size: 28px; font-weight: 700; color: #4F46E5; }
             .inv-subtitle { font-size: 11px; color: #64748b; }
             .inv-number { font-size: 12px; font-weight: 700; background: #EEF2FF; padding: 4px 12px; border-radius: 20px; display: inline-block; margin-top: 8px; }
+            .inv-instagram { font-size: 10px; color: #94a3b8; margin-top: 2px; }
             .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 16px 0; padding: 12px; background: #F8FAFC; border-radius: 8px; }
             .info-label { font-size: 10px; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.5px; }
             .info-value { font-weight: 600; }
@@ -93,6 +96,17 @@ const InvoiceModal: React.FC<Props> = ({ trx, onClose }) => {
     w.document.close();
     setTimeout(() => { w.print(); }, 300);
   };
+
+  // Helper untuk build header HTML invoice dari venue
+  const venueHeaderHtml = `
+    <div class="inv-header">
+      <div class="inv-logo">${venue.name}</div>
+      ${venue.tagline ? `<div class="inv-subtitle">${venue.tagline}</div>` : ''}
+      <div class="inv-subtitle">${venue.address}${venue.city ? ', ' + venue.city : ''}</div>
+      <div class="inv-subtitle">Telp: ${venue.phone}${venue.email ? ' · ' + venue.email : ''}</div>
+      ${venue.instagram ? `<div class="inv-instagram">${venue.instagram}</div>` : ''}
+    </div>
+  `;
 
   const handlePrintThermal = () => {
     const w = window.open('', '_blank');
@@ -166,9 +180,11 @@ const InvoiceModal: React.FC<Props> = ({ trx, onClose }) => {
         </head>
         <body>
           <div class="text-center mb-2">
-            <h1>Optik88</h1>
-            <p>Jl. Contoh No. 1, Jakarta</p>
-            <p>021-123456</p>
+            <h1>${venue.name}</h1>
+            ${venue.tagline ? `<p style="font-size:10px;">${venue.tagline}</p>` : ''}
+            <p>${venue.address}${venue.city ? ', ' + venue.city : ''}</p>
+            <p>${venue.phone}${venue.email ? ' | ' + venue.email : ''}</p>
+            ${venue.instagram ? `<p style="font-size:10px;">${venue.instagram}</p>` : ''}
           </div>
           
           <div class="divider"></div>
@@ -235,7 +251,8 @@ const InvoiceModal: React.FC<Props> = ({ trx, onClose }) => {
           
           <div class="text-center mb-3">
             <p>Terima Kasih</p>
-            <p style="font-size: 10px; margin-top: 4px;">Barang yang sudah dibeli tidak dapat ditukar/dikembalikan</p>
+            <p style="font-size: 10px; margin-top: 4px;">${venue.notes}</p>
+            ${venue.website ? `<p style="font-size: 9px; margin-top: 2px;">${venue.website}</p>` : ''}
           </div>
         </body>
       </html>
@@ -287,9 +304,11 @@ Semoga sehat selalu! 😊`);
           <div ref={printRef} className="invoice-paper">
             {/* Header */}
             <div className="inv-header">
-              <div className="inv-logo">Optik88</div>
-              <div className="inv-subtitle">Sistem Manajemen Optik · Jl. Contoh No. 1, Jakarta</div>
-              <div className="inv-subtitle">Telp: 021-123456 · optik88@email.com</div>
+              <div className="inv-logo">{venue.name}</div>
+              {venue.tagline && <div className="inv-subtitle">{venue.tagline}</div>}
+              <div className="inv-subtitle">{venue.address}{venue.city ? `, ${venue.city}` : ''}</div>
+              <div className="inv-subtitle">Telp: {venue.phone}{venue.email ? ` · ${venue.email}` : ''}</div>
+              {venue.instagram && <div className="inv-subtitle" style={{ fontSize: '0.7rem', color: '#94a3b8' }}>{venue.instagram}</div>}
               <div className="inv-number">{trx.invoice_number}</div>
             </div>
 
@@ -394,7 +413,8 @@ Semoga sehat selalu! 😊`);
             {trx.notes && <p style={{ fontSize: '0.8125rem', color: '#64748b', fontStyle: 'italic', marginTop: '8px' }}>📝 {trx.notes}</p>}
 
             <div className="footer">
-              <p>Terima kasih atas kepercayaan Anda · Barang yang sudah dibeli tidak dapat dikembalikan</p>
+              <p>{venue.notes}</p>
+              {venue.website && <p style={{ marginTop: '2px' }}>🌐 {venue.website}</p>}
               <p style={{ marginTop: '4px' }}>Status Pesanan: <strong style={{ textTransform: 'capitalize' }}>{trx.order_status}</strong></p>
             </div>
           </div>

@@ -335,3 +335,218 @@
   border-radius: 12px;
   border: 1px solid #e2e8f0;
 }
+
+/* ============================================================
+   VENUE / PROFIL OPTIK TAB
+   ============================================================ */
+
+/* Venue Layout: 2 columns on desktop */
+.venue-layout {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .venue-layout { grid-template-columns: 1fr; }
+}
+
+/* Venue Form Card */
+.venue-form-card {
+  gap: 1.25rem;
+}
+
+.settings-card-icon.venue-icon {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.venue-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 640px) {
+  .venue-form-grid { grid-template-columns: 1fr; }
+}
+
+.venue-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.venue-field.full-col {
+  grid-column: 1 / -1;
+}
+
+.venue-label {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.venue-input {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  color: #0f172a;
+  background: #f8fafc;
+  transition: all 0.2s;
+  font-family: inherit;
+  resize: none;
+}
+
+.venue-input:focus {
+  outline: none;
+  border-color: #6366f1;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.venue-textarea {
+  resize: vertical;
+  min-height: 60px;
+  line-height: 1.5;
+}
+
+.venue-hint {
+  font-size: 0.7rem;
+  color: #94a3b8;
+}
+
+/* Action buttons row */
+.venue-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.venue-save-btn {
+  flex: 1;
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+  transition: all 0.2s;
+}
+.venue-save-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35);
+}
+
+.btn-outline-muted {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.875rem 1.25rem;
+  border: 1.5px solid #cbd5e1;
+  background: white;
+  color: #64748b;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.btn-outline-muted:hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+.venue-reset-btn {
+  width: auto;
+}
+
+/* ===== PREVIEW CARD ===== */
+.venue-preview-card {
+  background: white;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  position: sticky;
+  top: 80px;
+}
+
+.venue-preview-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.venue-invoice-preview {
+  border: 1px dashed #c7d2fe;
+  border-radius: 10px;
+  padding: 1rem;
+  background: #fafafe;
+  text-align: center;
+}
+
+.vip-logo {
+  font-size: 1.375rem;
+  font-weight: 800;
+  color: #4f46e5;
+  letter-spacing: -0.02em;
+}
+
+.vip-tagline {
+  font-size: 0.7rem;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+.vip-divider {
+  border-bottom: 1.5px solid #e0e7ff;
+  margin: 8px 0;
+}
+
+.vip-row {
+  font-size: 0.75rem;
+  color: #475569;
+  line-height: 1.6;
+  text-align: left;
+}
+
+.venue-footer-preview {
+  border: 1px dashed #e2e8f0;
+  border-radius: 10px;
+  padding: 0.875rem;
+  background: #f8fafc;
+  font-size: 0.75rem;
+  color: #64748b;
+  line-height: 1.5;
+  font-style: italic;
+}
+
+.venue-storage-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
+  font-size: 0.7rem;
+  color: #16a34a;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  padding: 0.625rem 0.75rem;
+  border-radius: 8px;
+  line-height: 1.4;
+}
+
+.venue-storage-note svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
